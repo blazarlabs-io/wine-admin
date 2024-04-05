@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useModal } from "@/context/modalContext";
 
 export const UsersPage = () => {
-  const { updateModal } = useModal();
+  const { updateModal, updateModalLoading } = useModal();
 
   const [showCreateNewUser, setShowCreateNewUser] = useState<boolean>(false);
   const [showEditUser, setShowEditUser] = useState<boolean>(false);
@@ -62,39 +62,40 @@ export const UsersPage = () => {
             const level: string = data.level;
 
             setShowCreateNewUser(false);
+            updateModalLoading(true);
             fetch(`/api/create-user?email=${email}&password=${password}`).then(
               (res) => {
                 if (res.status === 200) {
-                  updateModal(newModal);
+                  res.json().then((data) => {
+                    console.log(data.data.uid);
+                    fetch(
+                      `/api/init-user-db?uid=${data.data.uid}&tier=${tier}&level=${level}`
+                    ).then((res) => {
+                      updateModalLoading(false);
+                      if (res.status === 200) {
+                        newModal.title = "User Created";
+                        newModal.description =
+                          "User has been Created successfully with Tier and Level";
+                        newModal.show = true;
+                        newModal.action.label = "Ok";
+                        newModal.action.onAction = () => {
+                          updateModal({
+                            show: false,
+                            title: "",
+                            description: "",
+                            action: { label: "", onAction: () => {} },
+                          });
+                        };
+                        updateModal(newModal);
+                      }
+                    });
+                  });
                 } else {
                   newModal.title = "Error";
                   newModal.description =
                     "An error occurred while creating user";
                   updateModal(newModal);
                 }
-                res.json().then((data) => {
-                  console.log(data.data.uid);
-                  fetch(
-                    `/api/init-user-db?uid=${data.data.uid}&tier=${tier}&level=${level}`
-                  ).then((res) => {
-                    if (res.status === 200) {
-                      newModal.title = "User DB Initialized";
-                      newModal.description =
-                        "User DB has been initialized successfully with Tier and Level";
-                      newModal.show = true;
-                      newModal.action.label = "Ok";
-                      newModal.action.onAction = () => {
-                        updateModal({
-                          show: false,
-                          title: "",
-                          description: "",
-                          action: { label: "", onAction: () => {} },
-                        });
-                      };
-                      updateModal(newModal);
-                    }
-                  });
-                });
               }
             );
           }}
@@ -142,23 +143,68 @@ export const UsersPage = () => {
                   action: {
                     label: "Ok",
                     onAction: () => {
+                      updateModalLoading(true);
                       fetch(`/api/delete-user?uid=${user.uid}`).then((res) => {
                         if (res.status === 200) {
-                          newModal.title = "User Deleted";
-                          newModal.description =
-                            "User has been deleted successfully";
-                          newModal.show = true;
-                          newModal.action.label = "Ok";
-                          newModal.action.onAction = () => {
-                            updateModal({
-                              show: false,
-                              title: "",
-                              description: "",
-                              action: { label: "", onAction: () => {} },
-                            });
-                          };
-                          updateModal(newModal);
+                          res.json().then((data) => {
+                            // Alert USER DELETED
+                            newModal.title = "User Deleted";
+                            newModal.description =
+                              "User has been deleted successfully";
+                            newModal.show = true;
+                            newModal.action.label = "Ok";
+                            newModal.action.onAction = () => {
+                              updateModal({
+                                show: false,
+                                title: "",
+                                description: "",
+                                action: { label: "", onAction: () => {} },
+                              });
+                            };
+                            updateModal(newModal);
+                            // Delete User DB
+                            fetch(`/api/delete-user-db?uid=${user.uid}`).then(
+                              (res) => {
+                                if (res.status === 200) {
+                                  updateModalLoading(false);
+                                  // Alert USER DB DELETED
+                                  newModal.title = "User Deleted";
+                                  newModal.description =
+                                    "User has been deleted successfully";
+                                  newModal.show = true;
+                                  newModal.action.label = "Ok";
+                                  newModal.action.onAction = () => {
+                                    updateModal({
+                                      show: false,
+                                      title: "",
+                                      description: "",
+                                      action: { label: "", onAction: () => {} },
+                                    });
+                                  };
+                                  updateModal(newModal);
+                                } else {
+                                  // Alert ERROR DELETING USER DB
+                                  newModal.title = "Error";
+                                  newModal.description =
+                                    "An error occurred while deleting user DB";
+                                  newModal.show = true;
+                                  newModal.action.label = "Ok";
+                                  newModal.action.onAction = () => {
+                                    updateModal({
+                                      show: false,
+                                      title: "",
+                                      description: "",
+                                      action: { label: "", onAction: () => {} },
+                                    });
+                                  };
+                                  updateModalLoading(false);
+                                  updateModal(newModal);
+                                }
+                              }
+                            );
+                          });
                         } else {
+                          // Alert ERROR DELETING USER
                           newModal.title = "Error";
                           newModal.description =
                             "An error occurred while deleting user";

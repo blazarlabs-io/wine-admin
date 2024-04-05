@@ -1,12 +1,13 @@
 "use client";
 
-import { Container, Text, Button } from "@/components";
+import { Container, Text, Button, SpinnerLoader } from "@/components";
 import { useModal } from "@/context/modalContext";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export const Modal = () => {
-  const { show, title, description, action, updateModal } = useModal();
+  const { show, title, description, action, updateModal, modalLoading } =
+    useModal();
   return (
     <AnimatePresence>
       {show && (
@@ -61,7 +62,7 @@ export const Modal = () => {
                 fullWidth
                 onClick={() => action.onAction()}
               >
-                {action.label}
+                {!modalLoading ? action.label : <SpinnerLoader />}
               </Button>
             </Container>
           </motion.div>

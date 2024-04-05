@@ -10,6 +10,8 @@ export interface ModalContextInterface extends ModalProps {
   description: string;
   action: ModalProps["action"];
   updateModal: (props: ModalProps) => void;
+  modalLoading: boolean;
+  updateModalLoading: (loading: boolean) => void;
 }
 
 const contextInitialData: ModalContextInterface = {
@@ -21,6 +23,8 @@ const contextInitialData: ModalContextInterface = {
     onAction: () => {},
   },
   updateModal: () => {},
+  modalLoading: false,
+  updateModalLoading: () => {},
 };
 
 const ModalContext = createContext(contextInitialData);
@@ -46,6 +50,13 @@ export const ModalProvider = ({
   const [action, setAction] = useState<ModalProps["action"]>(
     contextInitialData.action
   );
+  const [modalLoading, setModalLoading] = useState<boolean>(
+    contextInitialData.modalLoading
+  );
+
+  const updateModalLoading = (loading: boolean) => {
+    setModalLoading(loading);
+  };
 
   const updateModal = (props: ModalProps) => {
     setShow(props.show);
@@ -62,6 +73,8 @@ export const ModalProvider = ({
     description,
     action,
     updateModal,
+    modalLoading,
+    updateModalLoading,
   };
 
   return (
