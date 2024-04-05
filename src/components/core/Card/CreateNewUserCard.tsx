@@ -11,13 +11,13 @@ export const CreateNewUserCard = ({ onClick }: CreateNewUserCardProps) => {
       px="medium"
       py="medium"
       gap="medium"
-      className="bg-surface-light max-w-fit rounded-lg"
+      className="bg-surface-light/30 max-w-fit rounded-lg border border-surface-light"
     >
       <Container intent="flexColLeft" gap="small">
         <Text intent="h4" className="">
           Create New User
         </Text>
-        <Text intent="body" className="mt-small">
+        <Text intent="p1" className="mt-small">
           Create a new winery user for a customer / client.
         </Text>
       </Container>

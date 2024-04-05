@@ -23,8 +23,20 @@ export const checkIfAdminUser = async (email: string) => {
   }
 };
 
-export const listAllUsers = async () => {
-  const list: ListUsersResult = await adminAuth.listUsers();
-  const usersList = list.users.map((user) => user.toJSON());
-  console.log(usersList);
+export const createUser = async (email: string, password: string) => {
+  const result = await adminAuth.createUser({
+    email,
+    password,
+  });
+  return result;
+};
+
+export const deleteUser = async (uid: string) => {
+  const result = await adminAuth.deleteUser(uid);
+  return result;
+};
+
+export const updateUser = async (uid: string, data: any) => {
+  const result = await adminAuth.updateUser(uid, data);
+  return result;
 };

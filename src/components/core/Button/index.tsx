@@ -69,7 +69,7 @@ export const Button = ({
   intent,
   size,
   fullWidth,
-  disabled,
+  disabled = false,
   type = "button",
   onClick,
   ...props
@@ -78,6 +78,7 @@ export const Button = ({
     <button
       {...props}
       type={type}
+      disabled={disabled}
       className={button({
         intent,
         size,

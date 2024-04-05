@@ -3,7 +3,7 @@ import {
   SideBar,
   Container,
   // Toast,
-  // Modal,
+  Modal,
   AuthSpinnerLoader,
   GeneralLoaderOverlay,
 } from "@/components";
@@ -14,16 +14,14 @@ export interface BaseLayoutProps {
 
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
   return (
-    <main className="relative flex flex-col justify-start items-center mx-auto max-w-[1440px] h-screen w-full">
+    <main className="relative flex flex-col justify-start items-center mx-auto max-w-[1440px] h-screen w-[100vw]">
       <GeneralLoaderOverlay />
       <AuthSpinnerLoader />
-
-      {/* <Modal />
-      <Toast /> */}
+      <Modal />
       <TopBar />
-      <div className="flex items-start w-full h-full">
+      <div className="flex items-start w-full h-full mt-[48px]">
         <SideBar />
-        <div className="w-full h-full">{children}</div>
+        <div className="relative w-full h-full">{children}</div>
       </div>
     </main>
   );

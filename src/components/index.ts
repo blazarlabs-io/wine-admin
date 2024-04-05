@@ -11,11 +11,15 @@ export { TabGroup } from "./core/Navigation/TabGroup";
 export { UserAvatar } from "./core/Avatar/UserAvatar";
 export { CreateNewUserCard } from "./core/Card/CreateNewUserCard";
 export { DropDown } from "./core/DropDown";
+export { InfoTooltip } from "./core/Helper/InfoTooltip";
+export { PasswordInput } from "./core/Input/PasswordInput";
+export { Modal } from "./core/Overlay/Modal";
 
 // MOLUECLES
 export { Login } from "./molecules/Login";
-export { UserProfile } from "./molecules/UserProfile";
+export { UsersProfileCrud } from "./molecules/UsersProfileCrud";
 export { CreateNewUserForm } from "./molecules/CreateNewUserForm";
+export { EditUserForm } from "./molecules/EditUserForm";
 
 // LAYOUTS
 export { BaseLayout } from "./layouts/Base";

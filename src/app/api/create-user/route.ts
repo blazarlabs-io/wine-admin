@@ -1,13 +1,14 @@
 import { adminAuth } from "@/lib/firebase/admin";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const email = req.nextUrl.searchParams.get("email");
+  const password = req.nextUrl.searchParams.get("password");
+
   const result = await adminAuth.createUser({
-    email: "test@email.com",
+    email: email as string,
     emailVerified: false,
-    password: "secretPassword",
-    displayName: "John Doe",
-    photoURL: "http://www.example.com/12345678/photo.png",
+    password: password as string,
     disabled: false,
   });
 

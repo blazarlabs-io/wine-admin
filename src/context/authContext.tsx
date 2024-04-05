@@ -7,6 +7,7 @@ import { useAppState } from "./appStateContext";
 
 // LIBS
 import { createContext, useContext, useEffect, useState } from "react";
+import { NewUserInterface } from "@/typings/auth";
 
 export interface AuthContextInterface {
   user: User | null;
@@ -69,9 +70,11 @@ export const AuthProvider = ({
     };
   }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, authLoading, updateAuthLoading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    authLoading,
+    updateAuthLoading,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

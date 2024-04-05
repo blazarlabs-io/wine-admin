@@ -12,5 +12,22 @@ export interface TabGroupProps {
 }
 
 export interface UserAvatarProps {
-  user: User;
+  imageUrl: string;
+  initials: string;
+}
+
+export interface UsersProfileCrudProps {
+  users: User[];
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+}
+
+export interface ModalProps {
+  show: boolean;
+  title: string;
+  description: string;
+  action: {
+    label: string;
+    onAction: () => void;
+  };
 }

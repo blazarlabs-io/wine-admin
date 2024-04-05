@@ -19,8 +19,8 @@ export const TopBar = ({ className }: TopBarProps) => {
 
   const handleLogOut = async () => {
     signOut(auth)
-      .then(async () => {
-        redirect("/");
+      .then(() => {
+        router.replace("/sign-in");
       })
       .catch((error) => {});
   };
@@ -28,16 +28,25 @@ export const TopBar = ({ className }: TopBarProps) => {
   return (
     <Container
       px="large"
-      py="small"
+      py="medium"
       intent="flexRowBetween"
       className={classNames(
         className,
-        "bg-transparent",
+        "bg-surface-light",
+        "shadow-md",
         "backdrop-blur-sm",
         "min-h-[80px]",
-        "max-h-[80px]"
+        "max-h-[80px]",
+        "rounded-b-md"
       )}
     >
+      <Image
+        src="/eeh-logo.svg"
+        width={56}
+        height={56}
+        alt="logo"
+        style={{ objectFit: "cover" }}
+      />
       <Container intent="flexRowRight" gap="medium">
         <Button
           onClick={() => {

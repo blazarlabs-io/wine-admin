@@ -1,5 +1,29 @@
 import { cva } from "class-variance-authority";
-import { TextProps } from "@/typings/components";
+
+export type TextIntentType =
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6"
+  | "p1"
+  | "p2";
+export type TextVariantType =
+  | "normal"
+  | "accent"
+  | "dim"
+  | "inverted"
+  | "error"
+  | "success"
+  | "warning"
+  | "info";
+export interface TextProps {
+  children: React.ReactNode;
+  className?: string;
+  intent?: TextIntentType;
+  variant?: TextVariantType;
+}
 
 const text = cva("", {
   variants: {

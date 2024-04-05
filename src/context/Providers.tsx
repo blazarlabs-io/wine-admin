@@ -1,5 +1,6 @@
 import { AppStateProvider } from "./appStateContext";
 import { AuthProvider } from "./authContext";
+import { ModalProvider } from "./modalContext";
 import { SideBarProvider } from "./sideBarContext";
 
 export interface ProvidersProps {
@@ -9,9 +10,11 @@ export interface ProvidersProps {
 export const Providers = ({ children }: ProvidersProps) => {
   return (
     <AppStateProvider>
-      <SideBarProvider>
-        <AuthProvider>{children}</AuthProvider>
-      </SideBarProvider>
+      <ModalProvider>
+        <SideBarProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </SideBarProvider>
+      </ModalProvider>
     </AppStateProvider>
   );
 };

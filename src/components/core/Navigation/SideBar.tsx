@@ -9,7 +9,7 @@ export const SideBar = () => {
   return (
     <Container
       intent="flexColLeft"
-      className="w-64 max-h-fit bg-surface-light rounded-lg shadow-lg"
+      className="w-64 max-h-fit bg-surface-light rounded-lg"
     >
       <Container
         intent="flexColLeft"
