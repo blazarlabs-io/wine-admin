@@ -1,11 +1,10 @@
 import {
   TopBar,
   SideBar,
-  Container,
-  // Toast,
   Modal,
   AuthSpinnerLoader,
   GeneralLoaderOverlay,
+  Toast,
 } from "@/components";
 
 export interface BaseLayoutProps {
@@ -18,6 +17,7 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
       <GeneralLoaderOverlay />
       <AuthSpinnerLoader />
       <Modal />
+      <Toast />
       <TopBar />
       <div className="flex items-start w-full h-full mt-[48px]">
         <SideBar />

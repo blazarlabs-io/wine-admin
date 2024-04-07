@@ -1,5 +1,23 @@
 import { User } from "firebase/auth";
 
+export type ToastStatusType = "success" | "error" | "info" | "warning";
+export interface ToastProps {
+  show: boolean;
+  status: ToastStatusType | null;
+  message: string | null;
+  timeout: number | null;
+}
+
+export type TextVariantType =
+  | "normal"
+  | "accent"
+  | "dim"
+  | "inverted"
+  | "error"
+  | "success"
+  | "warning"
+  | "info";
+
 export interface TabItemInterface {
   label: string;
   icon: string;

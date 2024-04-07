@@ -1,6 +1,13 @@
 "use client";
 
-import { Button, Container, DropDown, Text, PasswordInput } from "@/components";
+import {
+  Button,
+  Container,
+  DropDown,
+  Text,
+  PasswordInput,
+  PasswordGenerator,
+} from "@/components";
 import { NewUserInterface, UserToEditOrDeleteInterface } from "@/typings/auth";
 import { createUser } from "@/utils/firebaseAuthUtils";
 import { validatePassword } from "@/utils/validatePassword";
@@ -67,7 +74,13 @@ export const CreateNewUserForm = ({
           <Text intent="p1" variant="dim">
             Password
           </Text>
-          <PasswordInput
+          <PasswordGenerator
+            onClick={(psw: string) => {
+              newUser.password = psw;
+              setNewUser({ ...newUser });
+            }}
+          />
+          {/* <PasswordInput
             onChange={(value: string) => {
               // handle password change
               newUser.password = value;
@@ -78,7 +91,7 @@ export const CreateNewUserForm = ({
             <Text intent="p2" variant="error">
               {passwordValidationError}
             </Text>
-          )}
+          )} */}
         </Container>
         <Container intent="flexRowBetween" gap="xsmall">
           <Container intent="flexColLeft" gap="xsmall" className="w-full">

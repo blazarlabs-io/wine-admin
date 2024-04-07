@@ -28,7 +28,7 @@ export const Modal = () => {
               stiffness: 260,
               damping: 20,
             }}
-            className="relative flex flex-col items-start justify-center p-[24px] gap-[24px] bg-surface min-w-[420px] max-w-fit rounded-lg shadow-lg"
+            className="relative flex flex-col items-start justify-center p-[24px] gap-[24px] bg-surface min-w-[520px] max-w-[520px]  rounded-lg shadow-lg"
           >
             <Button
               intent="unstyled"

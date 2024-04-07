@@ -49,7 +49,7 @@ export const UsersProfileCrud = ({
             <td className=" truncate max-w-[220px] px-6 py-4">
               <UserAvatar
                 imageUrl={user.photoURL as string}
-                initials={user.email?.charAt(0) as string}
+                initials={(user.email?.charAt(0) as string) || "U"}
               />
             </td>
             <td className=" truncate max-w-[220px] px-6 py-4">

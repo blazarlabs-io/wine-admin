@@ -3,15 +3,17 @@
 import { Container, Text, Button, SpinnerLoader } from "@/components";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase/client";
+import { auth, functions } from "@/lib/firebase/client";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-// import { useToast } from "@/context/toastContext";
-// import { ToastProps } from "@/typings/components";
 import { firebaseAuthErrors } from "@/utils/firebaseAuthErrors";
 import { useLocalStorage } from "usehooks-ts";
 import { useAuth } from "@/context/authContext";
 import { useAppState } from "@/context/appStateContext";
+import { httpsCallable } from "firebase/functions";
+import { ModalProps, ToastProps } from "@/typings/components";
+import { useModal } from "@/context/modalContext";
+import { useToast } from "@/context/toastContext";
 
 export interface LoginProps {
   title: string;
@@ -22,7 +24,7 @@ export const Login = ({ title, description }: LoginProps) => {
   const { user } = useAuth();
   const router = useRouter();
   const { updateAuthLoading, authLoading } = useAuth();
-  // const { updateToast } = useToast();
+  const { updateToast } = useToast();
   const { updateAppLoading } = useAppState();
   const [email, setEmail] = useLocalStorage(
     "email",
@@ -40,33 +42,64 @@ export const Login = ({ title, description }: LoginProps) => {
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const isUserAdmin = httpsCallable(functions, "isUserAdmin");
+
   useEffect(() => {
     !user && updateAppLoading(false);
   }, []);
 
+  const toastProps: ToastProps = {
+    show: false,
+    status: null,
+    message: null,
+    timeout: null,
+  };
+
   const handleSignIn = async () => {
     updateAuthLoading(true);
-    signInWithEmailAndPassword(auth, email.address, password.value)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log("signed in", user);
-        updateAuthLoading(false);
-        updateAppLoading(true);
-        router.replace("/home");
+
+    isUserAdmin({
+      data: {
+        email: email.address,
+      },
+    })
+      .then((result) => {
+        if (result.data) {
+          signInWithEmailAndPassword(auth, email.address, password.value)
+            .then((userCredential) => {
+              // Signed in
+              const user = userCredential.user;
+              updateAuthLoading(false);
+              updateAppLoading(true);
+              router.replace("/home");
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              console.log(firebaseAuthErrors[errorCode] as string);
+              toastProps.show = true;
+              toastProps.status = "error";
+              toastProps.message =
+                (firebaseAuthErrors[errorCode] as string) ?? errorMessage;
+              toastProps.timeout = 5000;
+              updateToast(toastProps);
+              updateAuthLoading(false);
+            });
+        } else {
+          toastProps.show = true;
+          toastProps.status = "error";
+          toastProps.message = "You are not an admin. user!";
+          toastProps.timeout = 5000;
+          updateToast(toastProps);
+          updateAuthLoading(false);
+        }
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(firebaseAuthErrors[errorCode] as string);
-        // const toastProps: ToastProps = {
-        //   show: true,
-        //   status: "error",
-        //   message: (firebaseAuthErrors[errorCode] as string) ?? errorMessage,
-        //   timeout: 5000,
-        // };
-        // console.log(toastProps);
-        // updateToast(toastProps);
+      .catch((err) => {
+        toastProps.show = true;
+        toastProps.status = "error";
+        toastProps.message = err.message;
+        toastProps.timeout = 5000;
+        updateToast(toastProps);
         updateAuthLoading(false);
       });
   };
