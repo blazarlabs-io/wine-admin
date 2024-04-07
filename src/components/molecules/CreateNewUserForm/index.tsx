@@ -9,8 +9,10 @@ import {
   PasswordGenerator,
 } from "@/components";
 import { NewUserInterface, UserToEditOrDeleteInterface } from "@/typings/auth";
+import { emailValidator } from "@/utils/emailValidator";
 import { createUser } from "@/utils/firebaseAuthUtils";
 import { validatePassword } from "@/utils/validatePassword";
+import { set } from "firebase/database";
 import { useEffect, useState } from "react";
 
 export interface CreateNewUserProps {
@@ -28,19 +30,30 @@ export const CreateNewUserForm = ({
     tier: "1",
     level: "wood",
   });
-  const [passwordValidationError, setPasswordValidationError] = useState<
-    string | null
-  >(null);
+  const [passwordGenerated, setPasswordGenerated] = useState<boolean>(false);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!validatePassword(newUser.password)) {
-      setPasswordValidationError(
-        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character."
-      );
+    if (emailValidator(newUser.email) && passwordGenerated) {
+      setButtonDisabled(false);
     } else {
-      setPasswordValidationError(null);
+      setButtonDisabled(true);
     }
-  }, [newUser.password]);
+  }, [newUser.email, passwordGenerated]);
+
+  // const [passwordValidationError, setPasswordValidationError] = useState<
+  //   string | null
+  // >(null);
+
+  // useEffect(() => {
+  //   if (!validatePassword(newUser.password)) {
+  //     setPasswordValidationError(
+  //       "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character."
+  //     );
+  //   } else {
+  //     setPasswordValidationError(null);
+  //   }
+  // }, [newUser.password]);
 
   return (
     <div className="flex items-center justify-center w-full h-full fixed top-0 left-0 bg-surface/80 backdrop-blur-sm">
@@ -78,6 +91,7 @@ export const CreateNewUserForm = ({
             onClick={(psw: string) => {
               newUser.password = psw;
               setNewUser({ ...newUser });
+              setPasswordGenerated(true);
             }}
           />
           {/* <PasswordInput
@@ -133,7 +147,7 @@ export const CreateNewUserForm = ({
             Cancel
           </Button>
           <Button
-            disabled={passwordValidationError !== null}
+            disabled={buttonDisabled}
             intent="primary"
             size="medium"
             fullWidth
