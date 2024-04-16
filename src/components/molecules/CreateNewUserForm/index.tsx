@@ -5,15 +5,12 @@ import {
   Container,
   DropDown,
   Text,
-  PasswordInput,
   PasswordGenerator,
 } from "@/components";
-import { NewUserInterface, UserToEditOrDeleteInterface } from "@/typings/auth";
+import { NewUserInterface } from "@/typings/auth";
 import { emailValidator } from "@/utils/emailValidator";
-import { createUser } from "@/utils/firebaseAuthUtils";
-import { validatePassword } from "@/utils/validatePassword";
-import { set } from "firebase/database";
 import { useEffect, useState } from "react";
+import { useRealTimeDb } from "@/context/realTimeDbContext";
 
 export interface CreateNewUserProps {
   onCreate: (newUser: NewUserInterface) => void;
@@ -30,6 +27,7 @@ export const CreateNewUserForm = ({
     tier: "1",
     level: "wood",
   });
+  const { tiers, levels } = useRealTimeDb();
   const [passwordGenerated, setPasswordGenerated] = useState<boolean>(false);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
 
@@ -40,20 +38,6 @@ export const CreateNewUserForm = ({
       setButtonDisabled(true);
     }
   }, [newUser.email, passwordGenerated]);
-
-  // const [passwordValidationError, setPasswordValidationError] = useState<
-  //   string | null
-  // >(null);
-
-  // useEffect(() => {
-  //   if (!validatePassword(newUser.password)) {
-  //     setPasswordValidationError(
-  //       "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character."
-  //     );
-  //   } else {
-  //     setPasswordValidationError(null);
-  //   }
-  // }, [newUser.password]);
 
   return (
     <div className="flex items-center justify-center w-full h-full fixed top-0 left-0 bg-surface/80 backdrop-blur-sm">
@@ -94,18 +78,6 @@ export const CreateNewUserForm = ({
               setPasswordGenerated(true);
             }}
           />
-          {/* <PasswordInput
-            onChange={(value: string) => {
-              // handle password change
-              newUser.password = value;
-              setNewUser({ ...newUser });
-            }}
-          />
-          {passwordValidationError && (
-            <Text intent="p2" variant="error">
-              {passwordValidationError}
-            </Text>
-          )} */}
         </Container>
         <Container intent="flexRowBetween" gap="xsmall">
           <Container intent="flexColLeft" gap="xsmall" className="w-full">
@@ -113,7 +85,7 @@ export const CreateNewUserForm = ({
               Tier
             </Text>
             <DropDown
-              items={["1", "2"]}
+              items={Object.keys(tiers)}
               fullWidth
               onSelect={(data: string) => {
                 // handle tier change
@@ -127,7 +99,7 @@ export const CreateNewUserForm = ({
               Level
             </Text>
             <DropDown
-              items={["Wood", "Bronze", "Silver", "Gold", "Platinum"]}
+              items={Object.keys(levels)}
               fullWidth
               onSelect={(data: string) => {
                 // handle level change

@@ -60,9 +60,9 @@ export const AuthProvider = ({
         router.push("/sign-in");
       }
 
-      setTimeout(() => {
-        console.log("User", user);
-      }, 3000);
+      // setTimeout(() => {
+      //   console.log("User", user);
+      // }, 3000);
     });
 
     return () => {
