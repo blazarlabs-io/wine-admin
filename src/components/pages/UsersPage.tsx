@@ -20,6 +20,7 @@ import { firebaseAuthErrors } from "@/utils/firebaseAuthErrors";
 import { useToast } from "@/context/toastContext";
 import { useAppState } from "@/context/appStateContext";
 import { generatePasswordHtml } from "@/utils/generatePasswordHtml";
+import { update } from "firebase/database";
 
 export const UsersPage = () => {
   const { updateModal, updateModalLoading } = useModal();
@@ -38,6 +39,10 @@ export const UsersPage = () => {
   const deleteUser = httpsCallable(functions, "deleteUser");
   const listAllUsers = httpsCallable(functions, "listAllUsers");
   const sendEmail = httpsCallable(functions, "sendEmail");
+  const updateUserTierAndLevel = httpsCallable(
+    functions,
+    "updateUserTierAndLevel"
+  );
 
   const modalData = {
     show: false,
@@ -137,7 +142,45 @@ export const UsersPage = () => {
       {showEditUser && (
         <EditUserForm
           user={userToEditOrDelete as UserToEditOrDeleteInterface}
-          onUpdate={() => {}}
+          onUpdate={(userToUpdate: UserToEditOrDeleteInterface) => {
+            console.log("USER TO UPDATE", userToUpdate);
+            updateAppLoading(true);
+            updateUserTierAndLevel({
+              data: {
+                uid: userToUpdate.uid,
+                tier: userToUpdate.tier,
+                level: userToUpdate.level,
+              },
+            })
+              .then((result) => {
+                // Read result of the Cloud Function.
+                /** @type {any} */
+                const data = result.data;
+                const sanitizedMessage: any = data;
+                console.log(sanitizedMessage.message);
+                updateAppLoading(false);
+                updateToast({
+                  show: true,
+                  status: "success",
+                  message: "User updated successfully",
+                  timeout: 3000,
+                });
+                setShowEditUser(false);
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(firebaseAuthErrors[errorCode] as string);
+                updateAppLoading(false);
+                updateToast({
+                  show: true,
+                  status: "error",
+                  message:
+                    (firebaseAuthErrors[errorCode] as string) ?? errorMessage,
+                  timeout: 5000,
+                });
+              });
+          }}
           onCancel={() => setShowEditUser(false)}
         />
       )}

@@ -7,13 +7,13 @@ import {
   Text,
   PasswordGenerator,
 } from "@/components";
-import { NewUserInterface } from "@/typings/auth";
+import { UserInterface } from "@/typings/auth";
 import { emailValidator } from "@/utils/emailValidator";
 import { useEffect, useState } from "react";
 import { useRealTimeDb } from "@/context/realTimeDbContext";
 
 export interface CreateNewUserProps {
-  onCreate: (newUser: NewUserInterface) => void;
+  onCreate: (newUser: UserInterface) => void;
   onCancel: () => void;
 }
 
@@ -21,7 +21,7 @@ export const CreateNewUserForm = ({
   onCreate,
   onCancel,
 }: CreateNewUserProps) => {
-  const [newUser, setNewUser] = useState<NewUserInterface>({
+  const [newUser, setNewUser] = useState<UserInterface>({
     email: "",
     password: "",
     tier: "1",
