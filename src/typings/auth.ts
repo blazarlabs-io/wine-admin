@@ -1,6 +1,6 @@
 import { User } from "firebase/auth";
 
-export interface NewUserInterface {
+export interface UserInterface {
   email: string;
   password: string;
   tier: string;
@@ -9,4 +9,6 @@ export interface NewUserInterface {
 
 export interface UserToEditOrDeleteInterface extends User {
   password: string;
+  tier: string;
+  level: string;
 }

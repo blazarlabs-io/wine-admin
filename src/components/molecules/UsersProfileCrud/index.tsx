@@ -74,7 +74,7 @@ export const UsersProfileCrud = ({
             </td>
             <td className="truncate max-w-[220px] px-6 py-4 space-x-4">
               <Button
-                disabled
+                disabled={false}
                 intent="text"
                 onClick={() => {
                   onEdit(user);

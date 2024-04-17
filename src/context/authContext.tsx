@@ -7,7 +7,6 @@ import { useAppState } from "./appStateContext";
 
 // LIBS
 import { createContext, useContext, useEffect, useState } from "react";
-import { NewUserInterface } from "@/typings/auth";
 
 export interface AuthContextInterface {
   user: User | null;
