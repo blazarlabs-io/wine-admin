@@ -86,6 +86,7 @@ export interface ContainerProps
   id?: string;
   key?: string;
   intent:
+    | "unstyled"
     | "flexColCenter"
     | "flexColTop"
     | "flexColLeft"

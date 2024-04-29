@@ -20,24 +20,22 @@ import { firebaseAuthErrors } from "@/utils/firebaseAuthErrors";
 import { useToast } from "@/context/toastContext";
 import { useAppState } from "@/context/appStateContext";
 import { generatePasswordHtml } from "@/utils/generatePasswordHtml";
-import { update } from "firebase/database";
+import { useGetUsersList } from "@/hooks/useGetUsersList";
 
 export const UsersPage = () => {
   const { updateModal, updateModalLoading } = useModal();
   const { updateToast } = useToast();
   const { updateAppLoading } = useAppState();
+  const { usersList, loadingUsers } = useGetUsersList();
 
   const [showCreateNewUser, setShowCreateNewUser] = useState<boolean>(false);
   const [showEditUser, setShowEditUser] = useState<boolean>(false);
   const [userToEditOrDelete, setUserToEditOrDelete] = useState<User | null>(
     null
   );
-  const [users, setUsers] = useState<User[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
 
   const createNewUser = httpsCallable(functions, "createNewUser");
   const deleteUser = httpsCallable(functions, "deleteUser");
-  const listAllUsers = httpsCallable(functions, "listAllUsers");
   const sendEmail = httpsCallable(functions, "sendEmail");
   const updateUserTierAndLevel = httpsCallable(
     functions,
@@ -53,17 +51,6 @@ export const UsersPage = () => {
       onAction: () => {},
     },
   };
-
-  useEffect(() => {
-    listAllUsers(null).then((result) => {
-      // Read result of the Cloud Function.
-      /** @type {any} */
-      const data = result.data;
-      const sanitizedMessage: any = data;
-      setUsers(sanitizedMessage.users);
-      setLoadingUsers(false);
-    });
-  }, [updateToast]);
 
   return (
     <>
@@ -195,69 +182,61 @@ export const UsersPage = () => {
           <Text intent="h3">Users</Text>
         </Container>
         <CreateNewUserCard onClick={() => setShowCreateNewUser(true)} />
-        <Container intent="flexColCenter" className="min-h-[134px]">
-          {loadingUsers ? (
-            <Icon
-              icon="svg-spinners:3-dots-bounce"
-              width="48"
-              height="48"
-              className="text-on-surface-dark"
-            />
-          ) : (
-            <UsersProfileCrud
-              users={users}
-              onEdit={(user: User) => {
-                setUserToEditOrDelete(user);
-                setShowEditUser(true);
-              }}
-              onDelete={(user: User) => {
-                modalData.show = true;
-                modalData.title = "Delete User";
-                modalData.description =
-                  "Are you sure you want to delete this user? This operation cannot be undone.";
-                modalData.action.label = "Confirm";
-                modalData.action.onAction = () => {
-                  updateModal({ ...modalData, show: false });
-                  updateAppLoading(true);
-                  deleteUser({
-                    data: {
-                      uid: user.uid,
-                    },
+        <Container intent="flexColCenter" className="min-h-[134px] w-full">
+          <UsersProfileCrud
+            loading={loadingUsers}
+            users={usersList}
+            onEdit={(user: User) => {
+              setUserToEditOrDelete(user);
+              setShowEditUser(true);
+            }}
+            onDelete={(user: User) => {
+              modalData.show = true;
+              modalData.title = "Delete User";
+              modalData.description =
+                "Are you sure you want to delete this user? This operation cannot be undone.";
+              modalData.action.label = "Confirm";
+              modalData.action.onAction = () => {
+                updateModal({ ...modalData, show: false });
+                updateAppLoading(true);
+                deleteUser({
+                  data: {
+                    uid: user.uid,
+                  },
+                })
+                  .then((result) => {
+                    // Read result of the Cloud Function.
+                    /** @type {any} */
+                    const data = result.data;
+                    const sanitizedMessage: any = data;
+                    const toastProps: ToastProps = {
+                      show: true,
+                      status: "success",
+                      message: sanitizedMessage.message,
+                      timeout: 5000,
+                    };
+                    updateAppLoading(false);
+                    updateToast(toastProps);
                   })
-                    .then((result) => {
-                      // Read result of the Cloud Function.
-                      /** @type {any} */
-                      const data = result.data;
-                      const sanitizedMessage: any = data;
-                      const toastProps: ToastProps = {
-                        show: true,
-                        status: "success",
-                        message: sanitizedMessage.message,
-                        timeout: 5000,
-                      };
-                      updateAppLoading(false);
-                      updateToast(toastProps);
-                    })
-                    .catch((error) => {
-                      const errorCode = error.code;
-                      const errorMessage = error.message;
-                      const toastProps: ToastProps = {
-                        show: true,
-                        status: "error",
-                        message:
-                          (firebaseAuthErrors[errorCode] as string) ??
-                          errorMessage,
-                        timeout: 5000,
-                      };
-                      console.log(toastProps);
-                      updateAppLoading(false);
-                      updateToast(toastProps);
-                    });
-                };
-                updateModal(modalData);
-              }}
-            />
-          )}
+                  .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    const toastProps: ToastProps = {
+                      show: true,
+                      status: "error",
+                      message:
+                        (firebaseAuthErrors[errorCode] as string) ??
+                        errorMessage,
+                      timeout: 5000,
+                    };
+                    console.log(toastProps);
+                    updateAppLoading(false);
+                    updateToast(toastProps);
+                  });
+              };
+              updateModal(modalData);
+            }}
+          />
         </Container>
       </Container>
     </>

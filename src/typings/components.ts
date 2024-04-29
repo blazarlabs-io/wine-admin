@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import { LevelType, TierType } from "./data";
 
 export type ToastStatusType = "success" | "error" | "info" | "warning";
 export interface ToastProps {
@@ -34,8 +35,15 @@ export interface UserAvatarProps {
   initials: string;
 }
 
+export interface UserForList extends User {
+  wineryName: string;
+  tier: TierType;
+  level: LevelType;
+}
+
 export interface UsersProfileCrudProps {
-  users: User[];
+  users: UserForList[];
+  loading: boolean;
   onEdit: (user: User) => void;
   onDelete: (user: User) => void;
 }
