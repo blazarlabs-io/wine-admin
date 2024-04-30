@@ -16,6 +16,11 @@ const contextInitialData: SideBarContextInterface = {
       selected: true,
     },
     {
+      label: "Notifications",
+      icon: "fluent:alert-12-regular",
+      selected: false,
+    },
+    {
       label: "Users",
       icon: "fluent:people-24-regular",
       selected: false,

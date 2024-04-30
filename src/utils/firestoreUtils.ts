@@ -1,5 +1,5 @@
 import { adminDB } from "@/lib/firebase/admin";
-import { TierAndLevelInterface } from "@/typings/data";
+import { CreateAdminNotification, TierAndLevelInterface } from "@/typings/data";
 
 export const createDocInCollection = async (
   collection: string,

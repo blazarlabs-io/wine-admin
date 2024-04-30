@@ -21,15 +21,16 @@ export const CreateNewUserForm = ({
   onCreate,
   onCancel,
 }: CreateNewUserProps) => {
-  const [newUser, setNewUser] = useState<UserInterface>({
-    email: "",
-    password: "",
-    tier: "1",
-    level: "wood",
-  });
   const { tiers, levels } = useRealTimeDb();
   const [passwordGenerated, setPasswordGenerated] = useState<boolean>(false);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+
+  const [newUser, setNewUser] = useState<UserInterface>({
+    email: "",
+    password: "",
+    tier: Object.keys(tiers)[0],
+    level: Object.keys(levels)[0],
+  });
 
   useEffect(() => {
     if (emailValidator(newUser.email) && passwordGenerated) {

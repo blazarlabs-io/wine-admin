@@ -15,6 +15,8 @@ export { InfoTooltip } from "./core/Helper/InfoTooltip";
 export { PasswordInput } from "./core/Input/PasswordInput";
 export { Modal } from "./core/Overlay/Modal";
 export { Toast } from "./core/Overlay/Toast";
+export { NotificationCard } from "./core/Card/NotificationCard";
+export { CopyToClipboard } from "./core/Helper/CopyToClipboard";
 
 // MOLUECLES
 export { Login } from "./molecules/Login";
@@ -34,3 +36,4 @@ export { ProtectedPage } from "./pages/ProtectedPage";
 export { DashboardPage } from "./pages/DashboardPage";
 export { UsersPage } from "./pages/UsersPage";
 export { SettingsPage } from "./pages/SettingsPage";
+export { NotificationsPage } from "./pages/NotificationsPage";

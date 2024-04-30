@@ -1,6 +1,11 @@
 "use client";
 
-import { DashboardPage, UsersPage, SettingsPage } from "@/components";
+import {
+  DashboardPage,
+  UsersPage,
+  SettingsPage,
+  NotificationsPage,
+} from "@/components";
 import { useSideBar } from "@/context/sideBarContext";
 import { useAppState } from "@/context/appStateContext";
 import { useEffect } from "react";
@@ -18,6 +23,9 @@ export default function DashboardHomePage() {
       {items.map((item) => (
         <div key={item.label}>
           {item.selected && item.label === "Dashboard" && <DashboardPage />}
+          {item.selected && item.label === "Notifications" && (
+            <NotificationsPage />
+          )}
           {item.selected && item.label === "Users" && <UsersPage />}
           {item.selected && item.label === "Settings" && <SettingsPage />}
         </div>

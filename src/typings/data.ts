@@ -1,5 +1,7 @@
-export type TierType = "1" | "2";
-export type LevelType = "wood" | "bronze" | "silver" | "gold" | "platinum";
+import { Timestamp } from "firebase/firestore";
+
+export type TierType = "1";
+export type LevelType = "bronze" | "silver" | "gold" | "diamond";
 
 export interface TierAndLevelInterface {
   tier: TierType | null;
@@ -15,10 +17,16 @@ export interface TiersInterface {
 }
 
 export interface LevelsInterface {
-  iron: SingleLevelInterface | null;
   bronze: SingleLevelInterface | null;
   silver: SingleLevelInterface | null;
   gold: SingleLevelInterface | null;
-  platinum: SingleLevelInterface | null;
   diamond: SingleLevelInterface | null;
+}
+
+export interface CreateAdminNotification {
+  requestDate: Timestamp;
+  wineryName: string;
+  wineryEmail: string;
+  wineryPhone: string;
+  wineryRepresentative: string;
 }

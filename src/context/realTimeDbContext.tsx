@@ -1,13 +1,20 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { LevelsInterface, TiersInterface } from "@/typings/data";
 
 export interface RealTimeDbContextInterface {
   tiers: TiersInterface;
   levels: LevelsInterface;
+  notifications: any;
 }
 
 const contextInitialData: RealTimeDbContextInterface = {
@@ -16,12 +23,11 @@ const contextInitialData: RealTimeDbContextInterface = {
   },
   levels: {
     bronze: null,
-    diamond: null,
-    gold: null,
-    iron: null,
-    platinum: null,
     silver: null,
+    gold: null,
+    diamond: null,
   },
+  notifications: [],
 };
 
 const RealTimeDbContext = createContext(contextInitialData);
@@ -43,24 +49,57 @@ export const RealTimeDbProvider = ({
   const [levels, setLevels] = useState<LevelsInterface>(
     contextInitialData.levels
   );
+  const [notifications, setNotifications] = useState<any>([]);
+
+  const sortLevels = (levels: LevelsInterface) => {
+    const sortedLevels: LevelsInterface = {
+      bronze: null,
+      silver: null,
+      gold: null,
+      diamond: null,
+    };
+
+    Object.keys(levels)
+      .sort()
+      .forEach((key) => {
+        sortedLevels[key as keyof LevelsInterface] =
+          levels[key as keyof LevelsInterface];
+      });
+
+    return sortedLevels;
+  };
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, "utils", "systemVariables"), (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        setTiers(data.tier);
-        setLevels(data.level);
+    const unsubSysVars = onSnapshot(
+      doc(db, "utils", "systemVariables"),
+      (doc) => {
+        if (doc.exists()) {
+          const data = doc.data();
+          setTiers(data.tier);
+          setLevels(sortLevels(data.level));
+        }
       }
+    );
+
+    const q = query(collection(db, "notifications"));
+    const unsubNotifications = onSnapshot(q, (querySnapshot) => {
+      const notifications: any = [];
+      querySnapshot.forEach((doc) => {
+        notifications.push(doc.data());
+      });
+      setNotifications(notifications);
     });
 
     return () => {
-      unsub();
+      unsubSysVars();
+      unsubNotifications();
     };
   }, []);
 
   const value = {
     tiers,
     levels,
+    notifications,
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Text } from "@/components";
+import { Container, NotificationCard, Text } from "@/components";
 import { Icon } from "@iconify/react";
 
 export const DashboardPage = () => {
@@ -15,6 +15,7 @@ export const DashboardPage = () => {
         />
         <Text intent="h3">Dashboard</Text>
       </Container>
+      {/* <NotificationCard /> */}
     </Container>
   );
 };
