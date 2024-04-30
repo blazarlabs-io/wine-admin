@@ -26,7 +26,7 @@ export const UsersPage = () => {
   const { updateModal, updateModalLoading } = useModal();
   const { updateToast } = useToast();
   const { updateAppLoading } = useAppState();
-  const { usersList, loadingUsers } = useGetUsersList();
+  const { usersList, loadingUsers, refreshList } = useGetUsersList();
 
   const [showCreateNewUser, setShowCreateNewUser] = useState<boolean>(false);
   const [showEditUser, setShowEditUser] = useState<boolean>(false);
@@ -100,6 +100,7 @@ export const UsersPage = () => {
                     const data = result.data;
                     const sanitizedMessage: any = data;
                     console.log(sanitizedMessage.message);
+                    refreshList();
                   })
                   .catch((error) => {
                     const errorCode = error.code;
@@ -153,6 +154,7 @@ export const UsersPage = () => {
                   timeout: 3000,
                 });
                 setShowEditUser(false);
+                refreshList();
               })
               .catch((error) => {
                 const errorCode = error.code;
@@ -217,6 +219,7 @@ export const UsersPage = () => {
                     };
                     updateAppLoading(false);
                     updateToast(toastProps);
+                    refreshList();
                   })
                   .catch((error) => {
                     const errorCode = error.code;

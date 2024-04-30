@@ -11,9 +11,16 @@ export const useGetUsersList = () => {
   const [rawUsers, setRawUsers] = useState<User[]>([]);
   const [usersList, setUsersList] = useState<UserForList[]>([]);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
+  const [refresh, setRefresh] = useState<boolean>(false);
+
+  const refreshList = () => {
+    setRefresh(!refresh);
+    console.log("refreshing");
+  };
 
   useEffect(() => {
     setLoadingUsers(true);
+    console.log("fetching");
     listAllUsers(null).then((result) => {
       // Read result of the Cloud Function.
       /** @type {any} */
@@ -21,9 +28,7 @@ export const useGetUsersList = () => {
       const sanitizedMessage: any = data;
       setRawUsers(sanitizedMessage.users);
     });
-  }, []);
-
-  useEffect(() => {}, []);
+  }, [refresh]);
 
   useEffect(() => {
     setUsersList([]);
@@ -45,6 +50,7 @@ export const useGetUsersList = () => {
 
           setUsersList((prev) => {
             prev = prev.filter((prevUser) => prevUser.uid !== user.uid);
+            setLoadingUsers(false);
             return [
               ...prev,
               {
@@ -61,8 +67,7 @@ export const useGetUsersList = () => {
           const errorMessage = error.message;
         });
     });
-    setLoadingUsers(false);
   }, [rawUsers]);
 
-  return { usersList, loadingUsers };
+  return { usersList, loadingUsers, refreshList };
 };

@@ -1,6 +1,12 @@
 "use client";
 
-import { UserAvatar, Text, Button, Container } from "@/components";
+import {
+  UserAvatar,
+  Text,
+  Button,
+  Container,
+  SpinnerLoader,
+} from "@/components";
 import { UserForList, UsersProfileCrudProps } from "@/typings/components";
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
@@ -13,10 +19,12 @@ export const UsersProfileCrud = ({
 }: UsersProfileCrudProps) => {
   const [showUserDetails, setShowUserDetails] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<UserForList | null>(null);
+  const [usersLoading, setUsersLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(userDetails);
-  }, [userDetails]);
+    console.log(loading);
+    setUsersLoading(loading);
+  }, [loading]);
   return (
     <>
       {showUserDetails && userDetails && (
@@ -151,126 +159,130 @@ export const UsersProfileCrud = ({
           </Container>
         </div>
       )}
-      <table className="min-w-full text-left text-sm font-light text-surface dark:text-white">
-        <thead className="border-b border-neutral-200 font-medium dark:border-white/10">
-          <tr>
-            <th scope="col" className="px-3 py-4">
-              <Text intent="p2" variant="dim">
-                Avatar
-              </Text>
-            </th>
-            <th scope="col" className="px-3 py-4">
-              <Text intent="p2" variant="dim">
-                Name
-              </Text>
-            </th>
-            <th scope="col" className="px-3 py-4">
-              <Text intent="p2" variant="dim">
-                Email
-              </Text>
-            </th>
-            <th scope="col" className="px-3 py-4">
-              <Text intent="p2" variant="dim">
-                User ID
-              </Text>
-            </th>
-            <th scope="col" className="px-3 py-4">
-              <Text intent="p2" variant="dim">
-                Created At
-              </Text>
-            </th>
-            <th scope="col" className="px-3 py-4">
-              <Text intent="p2" variant="dim">
-                Last Sign In
-              </Text>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => {
-            return (
-              <>
-                {!loading ? (
-                  <tr
-                    key={user.uid}
-                    className="border-b border-neutral-200 dark:border-white/10"
-                  >
-                    <td className=" truncate max-w-[220px] px-3 py-4">
-                      <UserAvatar
-                        imageUrl={user.photoURL as string}
-                        initials={(user.email?.charAt(0) as string) || "U"}
-                      />
-                    </td>
-                    <td className=" truncate max-w-[220px] px-3 py-4">
-                      <Text intent="p1" className="truncate">
-                        {user.wineryName}
-                      </Text>
-                    </td>
-                    <td className=" truncate max-w-[220px] px-3 py-4">
-                      <Text intent="p1" className="truncate">
-                        {user.email}
-                      </Text>
-                    </td>
-                    <td className="px-3 py-4 truncate max-w-[220px]">
-                      <Text intent="p1" className="truncate">
-                        {user.uid}
-                      </Text>
-                    </td>
-                    <td className=" truncate max-w-[220px] px-3 py-4">
-                      <Text intent="p1" className="truncate">
-                        {user.metadata.creationTime}
-                      </Text>
-                    </td>
-                    <td className=" truncate max-w-[220px] px-3 py-4">
-                      <Text intent="p1" className="truncate">
-                        {user.metadata.lastSignInTime}
-                      </Text>
-                    </td>
-                    <td className="truncate max-w-[220px] px-3 py-4 space-x-4">
-                      <Button
-                        title="Edit user"
-                        disabled={false}
-                        intent="text"
-                        onClick={() => {
-                          onEdit(user);
-                        }}
-                      >
-                        <Icon icon="fluent:edit-24-regular" width="20" />
-                      </Button>
-                      <Button
-                        title="Delete user"
-                        intent="text"
-                        onClick={() => {
-                          onDelete(user);
-                        }}
-                      >
-                        <Icon icon="fluent:delete-24-regular" width="20" />
-                      </Button>
-                      <Button
-                        title="User details"
-                        intent="text"
-                        onClick={() => {
-                          setShowUserDetails(true);
-                          setUserDetails(user);
-                        }}
-                      >
-                        <Icon icon="mdi:account-details" width="24" />
-                      </Button>
-                    </td>
-                  </tr>
-                ) : (
-                  <Icon
-                    icon="svg-spinners:3-dots-bounce"
-                    width="48"
-                    height="48"
-                    className="text-on-surface-dark"
-                  />
-                )}
-              </>
-            );
-          })}
-        </tbody>
-      </table>
+
+      {!loading ? (
+        <table className="min-w-full text-left text-sm font-light text-surface dark:text-white">
+          <thead className="border-b border-neutral-200 font-medium dark:border-white/10">
+            <tr>
+              <th scope="col" className="px-3 py-4">
+                <Text intent="p2" variant="dim">
+                  Avatar
+                </Text>
+              </th>
+              <th scope="col" className="px-3 py-4">
+                <Text intent="p2" variant="dim">
+                  Name
+                </Text>
+              </th>
+              <th scope="col" className="px-3 py-4">
+                <Text intent="p2" variant="dim">
+                  Email
+                </Text>
+              </th>
+              <th scope="col" className="px-3 py-4">
+                <Text intent="p2" variant="dim">
+                  User ID
+                </Text>
+              </th>
+              <th scope="col" className="px-3 py-4">
+                <Text intent="p2" variant="dim">
+                  Created At
+                </Text>
+              </th>
+              <th scope="col" className="px-3 py-4">
+                <Text intent="p2" variant="dim">
+                  Last Sign In
+                </Text>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <>
+              {users.map((user) => {
+                return (
+                  <>
+                    <tr
+                      key={user.uid}
+                      className="border-b border-neutral-200 dark:border-white/10"
+                    >
+                      <td className=" truncate max-w-[220px] px-3 py-4">
+                        <UserAvatar
+                          imageUrl={user.photoURL as string}
+                          initials={(user.email?.charAt(0) as string) || "U"}
+                        />
+                      </td>
+                      <td className=" truncate max-w-[220px] px-3 py-4">
+                        <Text intent="p1" className="truncate">
+                          {user.wineryName}
+                        </Text>
+                      </td>
+                      <td className=" truncate max-w-[220px] px-3 py-4">
+                        <Text intent="p1" className="truncate">
+                          {user.email}
+                        </Text>
+                      </td>
+                      <td className="px-3 py-4 truncate max-w-[120px]">
+                        <Text intent="p1" className="truncate">
+                          {user.uid}
+                        </Text>
+                      </td>
+                      <td className=" truncate max-w-[180px] px-3 py-4">
+                        <Text intent="p1" className="truncate">
+                          {user.metadata.creationTime}
+                        </Text>
+                      </td>
+                      <td className=" truncate max-w-[180px] px-3 py-4">
+                        <Text intent="p1" className="truncate">
+                          {user.metadata.lastSignInTime}
+                        </Text>
+                      </td>
+                      <td className="truncate max-w-[220px] px-3 py-4 space-x-4">
+                        <Button
+                          title="Edit user"
+                          disabled={false}
+                          intent="text"
+                          onClick={() => {
+                            onEdit(user);
+                          }}
+                        >
+                          <Icon icon="fluent:edit-24-regular" width="20" />
+                        </Button>
+                        <Button
+                          title="Delete user"
+                          intent="text"
+                          onClick={() => {
+                            onDelete(user);
+                          }}
+                        >
+                          <Icon icon="fluent:delete-24-regular" width="20" />
+                        </Button>
+                        <Button
+                          title="User details"
+                          intent="text"
+                          onClick={() => {
+                            setShowUserDetails(true);
+                            setUserDetails(user);
+                          }}
+                        >
+                          <Icon icon="mdi:account-details" width="24" />
+                        </Button>
+                      </td>
+                    </tr>
+                  </>
+                );
+              })}
+            </>
+          </tbody>
+        </table>
+      ) : (
+        <Container
+          intent="flexColCenter"
+          gap="small"
+          className="w-full h-[200px]"
+        >
+          <SpinnerLoader width="32px" height="32px" />
+        </Container>
+      )}
     </>
   );
 };
