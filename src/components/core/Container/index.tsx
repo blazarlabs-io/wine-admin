@@ -7,6 +7,7 @@ const container = cva("container", {
       flexColCenter: ["flex", "flex-col", "items-center", "justify-center"],
       flexColTop: ["flex", "flex-col", "items-center", "justify-start"],
       flexColLeft: ["flex", "flex-col", "items-start", "justify-start"],
+      flexColRight: ["flex", "flex-col", "items-end", "justify-start"],
       flexRowLeft: ["flex", "flex-row", "items-center", "justify-start"],
       flexRowRight: [
         "flex",
@@ -90,6 +91,7 @@ export interface ContainerProps
     | "flexColCenter"
     | "flexColTop"
     | "flexColLeft"
+    | "flexColRight"
     | "flexRowLeft"
     | "flexRowRight"
     | "flexRowCenter"

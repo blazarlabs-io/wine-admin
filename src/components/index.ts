@@ -17,6 +17,7 @@ export { Modal } from "./core/Overlay/Modal";
 export { Toast } from "./core/Overlay/Toast";
 export { NotificationCard } from "./core/Card/NotificationCard";
 export { CopyToClipboard } from "./core/Helper/CopyToClipboard";
+export { DashboardStatCard } from "./core/Card/DashboardStatCard";
 
 // MOLUECLES
 export { Login } from "./molecules/Login";
@@ -24,6 +25,9 @@ export { UsersProfileCrud } from "./molecules/UsersProfileCrud";
 export { CreateNewUserForm } from "./molecules/CreateNewUserForm";
 export { EditUserForm } from "./molecules/EditUserForm";
 export { PasswordGenerator } from "./molecules/PasswordGenerator";
+export { TierLevelCrud } from "./molecules/TierLevelCrud";
+export { WineTypesCrud } from "./molecules/WineTypesCrud";
+export { ConfirmDeleteDialog } from "./molecules/ConfirmDeleteDialog";
 
 // LAYOUTS
 export { BaseLayout } from "./layouts/Base";

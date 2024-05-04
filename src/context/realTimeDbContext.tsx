@@ -14,7 +14,10 @@ import { LevelsInterface, TiersInterface } from "@/typings/data";
 export interface RealTimeDbContextInterface {
   tiers: TiersInterface;
   levels: LevelsInterface;
+  wineTypes: string[];
   notifications: any;
+  totalWineries: number;
+  totalEuLabels: number;
 }
 
 const contextInitialData: RealTimeDbContextInterface = {
@@ -27,7 +30,10 @@ const contextInitialData: RealTimeDbContextInterface = {
     gold: null,
     diamond: null,
   },
+  wineTypes: [],
   notifications: [],
+  totalWineries: 0,
+  totalEuLabels: 0,
 };
 
 const RealTimeDbContext = createContext(contextInitialData);
@@ -49,7 +55,14 @@ export const RealTimeDbProvider = ({
   const [levels, setLevels] = useState<LevelsInterface>(
     contextInitialData.levels
   );
+  const [wineTypes, setWineTypes] = useState<string[]>([]);
   const [notifications, setNotifications] = useState<any>([]);
+  const [totalWineries, setTotalWineries] = useState<number>(
+    contextInitialData.totalWineries
+  );
+  const [totalEuLabels, setTotalEuLabels] = useState<number>(
+    contextInitialData.totalEuLabels
+  );
 
   const sortLevels = (levels: LevelsInterface) => {
     const sortedLevels: LevelsInterface = {
@@ -77,6 +90,7 @@ export const RealTimeDbProvider = ({
           const data = doc.data();
           setTiers(data.tier);
           setLevels(sortLevels(data.level));
+          setWineTypes(data.wineTypes);
         }
       }
     );
@@ -90,16 +104,33 @@ export const RealTimeDbProvider = ({
       setNotifications(notifications);
     });
 
+    const unsubWineries = onSnapshot(
+      collection(db, "wineries"),
+      (querySnapshot) => {
+        setTotalWineries(querySnapshot.size);
+        querySnapshot.forEach((doc) => {
+          const euLabels = doc.data().euLabels;
+          if (euLabels) {
+            setTotalEuLabels((prev) => prev + euLabels.length);
+          }
+        });
+      }
+    );
+
     return () => {
       unsubSysVars();
       unsubNotifications();
+      unsubWineries();
     };
   }, []);
 
   const value = {
     tiers,
     levels,
+    wineTypes,
     notifications,
+    totalWineries,
+    totalEuLabels,
   };
 
   return (
