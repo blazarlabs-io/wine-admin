@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Text } from "@/components";
+import { Container, Text, TierLevelCrud, WineTypesCrud } from "@/components";
 import { Icon } from "@iconify/react";
 
 export const SettingsPage = () => {
@@ -15,6 +15,8 @@ export const SettingsPage = () => {
         />
         <Text intent="h3">Settings</Text>
       </Container>
+      <TierLevelCrud />
+      <WineTypesCrud />
     </Container>
   );
 };

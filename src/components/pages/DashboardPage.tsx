@@ -1,11 +1,13 @@
 "use client";
 
-import { Container, NotificationCard, Text } from "@/components";
+import { Container, DashboardStatCard, Text } from "@/components";
 import { Icon } from "@iconify/react";
+import { useRealTimeDb } from "@/context/realTimeDbContext";
 
 export const DashboardPage = () => {
+  const { totalWineries, totalEuLabels } = useRealTimeDb();
   return (
-    <Container intent="flexColLeft" px="large" gap="medium">
+    <Container intent="flexRowWrap" px="large" gap="medium">
       <Container intent="flexRowLeft" gap="xsmall">
         <Icon
           icon="fluent:home-24-regular"
@@ -15,7 +17,16 @@ export const DashboardPage = () => {
         />
         <Text intent="h3">Dashboard</Text>
       </Container>
-      {/* <NotificationCard /> */}
+      <DashboardStatCard
+        title="Wineries"
+        stat={totalWineries}
+        icon="ph:farm-fill"
+      />
+      <DashboardStatCard
+        title="QR Codes"
+        stat={totalEuLabels}
+        icon="ic:baseline-qr-code"
+      />
     </Container>
   );
 };

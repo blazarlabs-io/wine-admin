@@ -7,11 +7,12 @@ import {
   CreateNewUserForm,
   EditUserForm,
   CreateNewUserCard,
+  ConfirmDeleteDialog,
 } from "@/components";
 import { UserToEditOrDeleteInterface } from "@/typings/auth";
 import { Icon } from "@iconify/react";
 import { User } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useModal } from "@/context/modalContext";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/lib/firebase/client";
@@ -33,6 +34,8 @@ export const UsersPage = () => {
   const [userToEditOrDelete, setUserToEditOrDelete] = useState<User | null>(
     null
   );
+  const [showConfirmDeleteUser, setShowConfirmDeleteUser] =
+    useState<User | null>(null);
 
   const createNewUser = httpsCallable(functions, "createNewUser");
   const deleteUser = httpsCallable(functions, "deleteUser");
@@ -54,6 +57,51 @@ export const UsersPage = () => {
 
   return (
     <>
+      {showConfirmDeleteUser && (
+        <ConfirmDeleteDialog
+          onCancel={() => {
+            setShowConfirmDeleteUser(null);
+          }}
+          onDelete={() => {
+            setShowConfirmDeleteUser(null);
+            updateAppLoading(true);
+            deleteUser({
+              data: {
+                uid: showConfirmDeleteUser?.uid,
+              },
+            })
+              .then((result) => {
+                // Read result of the Cloud Function.
+                /** @type {any} */
+                const data = result.data;
+                const sanitizedMessage: any = data;
+                const toastProps: ToastProps = {
+                  show: true,
+                  status: "success",
+                  message: sanitizedMessage.message,
+                  timeout: 5000,
+                };
+                updateAppLoading(false);
+                updateToast(toastProps);
+                refreshList();
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                const toastProps: ToastProps = {
+                  show: true,
+                  status: "error",
+                  message:
+                    (firebaseAuthErrors[errorCode] as string) ?? errorMessage,
+                  timeout: 5000,
+                };
+                console.log(toastProps);
+                updateAppLoading(false);
+                updateToast(toastProps);
+              });
+          }}
+        />
+      )}
       {showCreateNewUser && (
         <CreateNewUserForm
           onCreate={(data) => {
@@ -197,45 +245,10 @@ export const UsersPage = () => {
               modalData.title = "Delete User";
               modalData.description =
                 "Are you sure you want to delete this user? This operation cannot be undone.";
-              modalData.action.label = "Confirm";
+              modalData.action.label = "Yes";
               modalData.action.onAction = () => {
                 updateModal({ ...modalData, show: false });
-                updateAppLoading(true);
-                deleteUser({
-                  data: {
-                    uid: user.uid,
-                  },
-                })
-                  .then((result) => {
-                    // Read result of the Cloud Function.
-                    /** @type {any} */
-                    const data = result.data;
-                    const sanitizedMessage: any = data;
-                    const toastProps: ToastProps = {
-                      show: true,
-                      status: "success",
-                      message: sanitizedMessage.message,
-                      timeout: 5000,
-                    };
-                    updateAppLoading(false);
-                    updateToast(toastProps);
-                    refreshList();
-                  })
-                  .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    const toastProps: ToastProps = {
-                      show: true,
-                      status: "error",
-                      message:
-                        (firebaseAuthErrors[errorCode] as string) ??
-                        errorMessage,
-                      timeout: 5000,
-                    };
-                    console.log(toastProps);
-                    updateAppLoading(false);
-                    updateToast(toastProps);
-                  });
+                setShowConfirmDeleteUser(user);
               };
               updateModal(modalData);
             }}
