@@ -30,6 +30,11 @@ const contextInitialData: SideBarContextInterface = {
       icon: "fluent:settings-24-regular",
       selected: false,
     },
+    {
+      label: "Backend",
+      icon: "solar:server-outline",
+      selected: false,
+    },
   ],
   handleItems: () => {},
 };

@@ -28,6 +28,7 @@ export { PasswordGenerator } from "./molecules/PasswordGenerator";
 export { TierLevelCrud } from "./molecules/TierLevelCrud";
 export { WineTypesCrud } from "./molecules/WineTypesCrud";
 export { ConfirmDeleteDialog } from "./molecules/ConfirmDeleteDialog";
+export { BackendTaskRun } from "./molecules/BackendTaskRun";
 
 // LAYOUTS
 export { BaseLayout } from "./layouts/Base";
@@ -41,3 +42,4 @@ export { DashboardPage } from "./pages/DashboardPage";
 export { UsersPage } from "./pages/UsersPage";
 export { SettingsPage } from "./pages/SettingsPage";
 export { NotificationsPage } from "./pages/NotificationsPage";
+export { BackendPage } from "./pages/BackendPage";
