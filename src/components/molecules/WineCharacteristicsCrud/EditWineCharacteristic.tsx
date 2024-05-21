@@ -1,56 +1,40 @@
 "use client";
 
 import { Button, Container, Text } from "@/components";
-import { useEffect, useState } from "react";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "@/lib/firebase/client";
-import { useToast } from "@/context/toastContext";
-import { useRealTimeDb } from "@/context/realTimeDbContext";
+import { useState } from "react";
 import { useAppState } from "@/context/appStateContext";
 
-export interface AddWineProps {
+export interface EditWineProps {
+  titleKey: string;
+  wineCharacteristicLabel: string;
+  wineCharacteristic: string;
+  wineCharacteristics: string[];
   onCancel: () => void;
-  onSave: (wineType: string) => void;
+  onSave: (newWineColours: string[]) => void;
 }
 
-export const AddWineType = ({ onSave, onCancel }: AddWineProps) => {
-  const { updateToast } = useToast();
+export const EditWineCharacteristic = ({
+  titleKey,
+  wineCharacteristicLabel,
+  wineCharacteristic,
+  wineCharacteristics,
+  onSave,
+  onCancel,
+}: EditWineProps) => {
   const { updateAppLoading } = useAppState();
-  const { wineTypes } = useRealTimeDb();
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(wineCharacteristic);
 
-  const updateWineTypes = httpsCallable(functions, "updateWineTypes");
-
-  const handleUpdateWineTypes = async () => {
+  const handleUpdateWineCharacteristics = async () => {
     updateAppLoading(true);
-    const newWineTypes = [...wineTypes, value];
-    console.log(newWineTypes);
-    updateWineTypes({
-      data: {
-        wineTypes: newWineTypes,
-      },
-    })
-      .then((res) => {
-        onSave(value);
-        console.log(res.data);
-        updateAppLoading(false);
-        updateToast({
-          message: "Wine Type Added",
-          status: "success",
-          show: true,
-          timeout: 5000,
-        });
-      })
-      .catch(() => {
-        console.log("Error");
-        updateAppLoading(false);
-        updateToast({
-          message: "Error adding Wine Type",
-          status: "error",
-          show: true,
-          timeout: 5000,
-        });
-      });
+
+    const newWineColours = wineCharacteristics.map((wine) => {
+      if (wine === wineCharacteristic) {
+        return value;
+      }
+      return wine;
+    });
+
+    onSave(newWineColours);
   };
 
   return (
@@ -61,12 +45,12 @@ export const AddWineType = ({ onSave, onCancel }: AddWineProps) => {
         gap="large"
       >
         <Container intent="flexColLeft" gap="medium">
-          <Text intent="h3">Add Wine Type</Text>
+          <Text intent="h3">{`Edit Wine ${titleKey}`}</Text>
         </Container>
         <Container intent="flexRowBetween" gap="xsmall">
           <Container intent="flexColLeft" gap="xsmall" className="w-full">
             <Text intent="p1" variant="dim">
-              Wine Name
+              {`Wine ${titleKey}`}
             </Text>
             <input
               type="text"
@@ -94,7 +78,7 @@ export const AddWineType = ({ onSave, onCancel }: AddWineProps) => {
             fullWidth
             size="medium"
             onClick={() => {
-              handleUpdateWineTypes();
+              handleUpdateWineCharacteristics();
             }}
           >
             Save

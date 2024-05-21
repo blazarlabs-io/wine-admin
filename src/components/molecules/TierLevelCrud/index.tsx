@@ -21,11 +21,14 @@ export const TierLevelCrud = ({}) => {
     >
       {levelToEdit && (
         <TierLevelForm
-          level={levelToEdit}
+          levels={levels}
+          levelToEdit={levelToEdit}
           onCancel={() => {
             setLevelToEdit(null);
           }}
-          onUpdate={() => {}}
+          onUpdate={() => {
+            setLevelToEdit(null);
+          }}
         />
       )}
       <Container intent="flexColLeft" gap="small">
@@ -48,7 +51,7 @@ export const TierLevelCrud = ({}) => {
           </Container>
           <Container intent="flexRowLeft" className="">
             <Text intent="p2" variant="dim">
-              Allowed Labels
+              Allowed Qr Codes
             </Text>
           </Container>
         </Container>
@@ -83,7 +86,7 @@ export const TierLevelCrud = ({}) => {
                     className="bg-surface-light w-full"
                   >
                     <Text intent="p1" className="truncate capitalize">
-                      {levels[key]?.euLabels}
+                      {levels[key]?.qrCodes}
                     </Text>
                   </Container>
 
@@ -99,7 +102,7 @@ export const TierLevelCrud = ({}) => {
                         const levelToEdit: LevelToEditOrDeleteInterface = {
                           level: key,
                           price: levels[key]?.price as number,
-                          allowedLabels: levels[key]?.euLabels as number,
+                          qrCodes: levels[key]?.qrCodes as number,
                         };
                         setLevelToEdit(
                           levelToEdit as LevelToEditOrDeleteInterface

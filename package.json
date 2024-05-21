@@ -7,17 +7,23 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "emulate": "firebase emulators:start"
+    "emulate": "firebase emulators:start",
+    "export:firestore:development": "firestore-export --accountCredentials ./src/lib/firebase/google-services/development.json --backupFile ./src/lib/firebase/backup/dev-backup.json",
+    "import:firestore:development": "firestore-import --accountCredentials ./src/lib/firebase/google-services/development.json --backupFile ./src/lib/firebase/backup/dev-backup.json"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.3",
     "@iconify/react": "^4.1.1",
+    "@vis.gl/react-google-maps": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "firebase": "^10.10.0",
     "firebase-admin": "^11.0.0",
+    "firestore-export-import": "^1.4.0",
     "framer-motion": "^11.0.25",
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-syntax-highlighter": "^15.5.0",
     "usehooks-ts": "^3.0.2"
   },
   "devDependencies": {

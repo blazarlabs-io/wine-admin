@@ -7,7 +7,7 @@ import {
   CreateNewUserForm,
   EditUserForm,
   CreateNewUserCard,
-  ConfirmDeleteDialog,
+  ConfirmActionDialog,
 } from "@/components";
 import { UserToEditOrDeleteInterface } from "@/typings/auth";
 import { Icon } from "@iconify/react";
@@ -58,11 +58,12 @@ export const UsersPage = () => {
   return (
     <>
       {showConfirmDeleteUser && (
-        <ConfirmDeleteDialog
+        <ConfirmActionDialog
+          action="DELETE"
           onCancel={() => {
             setShowConfirmDeleteUser(null);
           }}
-          onDelete={() => {
+          onConfirm={() => {
             setShowConfirmDeleteUser(null);
             updateAppLoading(true);
             deleteUser({
@@ -102,7 +103,7 @@ export const UsersPage = () => {
           }}
         />
       )}
-      {showCreateNewUser && (
+      {/* {showCreateNewUser && (
         <CreateNewUserForm
           onCreate={(data) => {
             setShowCreateNewUser(false);
@@ -118,8 +119,6 @@ export const UsersPage = () => {
               },
             })
               .then((result) => {
-                // Read result of the Cloud Function.
-                /** @type {any} */
                 const data = result.data;
                 const sanitizedMessage: any = data;
                 const toastProps: ToastProps = {
@@ -143,8 +142,6 @@ export const UsersPage = () => {
                   },
                 })
                   .then((result) => {
-                    // Read result of the Cloud Function.
-                    /** @type {any} */
                     const data = result.data;
                     const sanitizedMessage: any = data;
                     console.log(sanitizedMessage.message);
@@ -174,7 +171,7 @@ export const UsersPage = () => {
           }}
           onCancel={() => setShowCreateNewUser(false)}
         />
-      )}
+      )} */}
       {showEditUser && (
         <EditUserForm
           user={userToEditOrDelete as UserToEditOrDeleteInterface}
@@ -231,7 +228,7 @@ export const UsersPage = () => {
           />
           <Text intent="h3">Users</Text>
         </Container>
-        <CreateNewUserCard onClick={() => setShowCreateNewUser(true)} />
+        {/* <CreateNewUserCard onClick={() => setShowCreateNewUser(true)} /> */}
         <Container intent="flexColCenter" className="min-h-[134px] w-full">
           <UsersProfileCrud
             loading={loadingUsers}

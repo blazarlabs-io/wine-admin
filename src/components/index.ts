@@ -26,9 +26,11 @@ export { CreateNewUserForm } from "./molecules/CreateNewUserForm";
 export { EditUserForm } from "./molecules/EditUserForm";
 export { PasswordGenerator } from "./molecules/PasswordGenerator";
 export { TierLevelCrud } from "./molecules/TierLevelCrud";
-export { WineTypesCrud } from "./molecules/WineTypesCrud";
-export { ConfirmDeleteDialog } from "./molecules/ConfirmDeleteDialog";
-export { BackendTaskRun } from "./molecules/BackendTaskRun";
+export { WineCharacteristicsCrud } from "./molecules/WineCharacteristicsCrud";
+export { ConfirmActionDialog } from "./molecules/ConfirmActionDialog";
+export { BackendTaskReplaceDbField } from "./molecules/Backend/BackendTaskReplaceDbField";
+export { BackEndTaskSetLevelMap } from "./molecules/Backend/BackEndTaskSetLevelMap";
+export { BackEndReplaceWineryData } from "./molecules/Backend/BackEndReplaceWineryData";
 
 // LAYOUTS
 export { BaseLayout } from "./layouts/Base";

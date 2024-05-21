@@ -1,18 +1,20 @@
 "use client";
 
-import { Button, Container, DropDown, SpinnerLoader, Text } from "@/components";
-import { useEffect, useState } from "react";
-import { UserToEditOrDeleteInterface } from "@/typings/auth";
-import { useRealTimeDb } from "@/context/realTimeDbContext";
+import { Button, Container, Text } from "@/components";
+import { useState } from "react";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/lib/firebase/client";
 import { firebaseAuthErrors } from "@/utils/firebaseAuthErrors";
 import { LevelToEditOrDeleteInterface } from "@/typings/settings";
+import { LevelsInterface } from "@/typings/data";
+import { useAppState } from "@/context/appStateContext";
+import { useToast } from "@/context/toastContext";
 
 export interface EditTierLevelFormProps {
-  level: LevelToEditOrDeleteInterface;
-  onUpdate: (userToUpdate: LevelToEditOrDeleteInterface) => void;
-  onCancel: () => void;
+  levels: LevelsInterface;
+  levelToEdit: LevelToEditOrDeleteInterface;
+  onUpdate?: () => void;
+  onCancel?: () => void;
 }
 
 export interface TierAndLevelInterface {
@@ -21,19 +23,55 @@ export interface TierAndLevelInterface {
 }
 
 export const TierLevelForm = ({
-  level,
+  levels,
+  levelToEdit,
   onUpdate,
   onCancel,
 }: EditTierLevelFormProps) => {
-  const { tiers, levels } = useRealTimeDb();
-  const [userToUpdate, setUserToUpdate] =
-    useState<UserToEditOrDeleteInterface | null>(null);
-  const [currentTierAndLevel, setCurrentTierAndLevel] =
-    useState<TierAndLevelInterface | null>(null);
+  const { updateToast } = useToast();
+  const { updateAppLoading } = useAppState();
 
-  const getUserTierAndLevel = httpsCallable(functions, "getUserTierAndLevel");
+  const [levelToEditOrDelete, setLevelToEditOrDelete] =
+    useState<LevelToEditOrDeleteInterface>({
+      level: levelToEdit.level,
+      price: levelToEdit.price,
+      qrCodes: levelToEdit.qrCodes,
+    });
 
-  useEffect(() => {}, []);
+  const createLevelMapInDb = httpsCallable(functions, "createLevelMapInDb");
+
+  const updateHandler = async () => {
+    updateAppLoading(true);
+    const updatedLevels = {
+      ...levels,
+      [levelToEdit.level]: levelToEditOrDelete,
+    };
+    createLevelMapInDb({
+      data: updatedLevels,
+    })
+      .then((res) => {
+        onUpdate && onUpdate();
+        console.log(res.data);
+        updateAppLoading(false);
+        updateToast({
+          message: "Level Updated",
+          status: "success",
+          show: true,
+          timeout: 3000,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(firebaseAuthErrors[error.code]);
+        updateAppLoading(false);
+        updateToast({
+          message: "Error updating level",
+          status: "error",
+          show: true,
+          timeout: 3000,
+        });
+      });
+  };
 
   return (
     <div className="flex items-center justify-center w-full h-full fixed top-0 left-0 bg-surface/80 backdrop-blur-sm">
@@ -52,19 +90,29 @@ export const TierLevelForm = ({
             </Text>
             <input
               type="text"
-              value={level.level}
-              onChange={(event: any) => {}}
+              value={levelToEditOrDelete.level}
+              onChange={(event: any) => {
+                setLevelToEditOrDelete({
+                  ...levelToEditOrDelete,
+                  level: event.target.value,
+                });
+              }}
               className="w-full text-on-surface p-[8px] bg-surface-dark rounded-md min-h-[48px] max-h-[48px]"
             />
           </Container>
           <Container intent="flexColLeft" gap="xsmall" className="w-full">
             <Text intent="p1" variant="dim">
-              Level
+              Price
             </Text>
             <input
               type="number"
-              value={level.price}
-              onChange={(event: any) => {}}
+              value={levelToEditOrDelete.price}
+              onChange={(event: any) => {
+                setLevelToEditOrDelete({
+                  ...levelToEditOrDelete,
+                  price: parseInt(event.target.value),
+                });
+              }}
               className="w-full text-on-surface p-[8px] bg-surface-dark rounded-md min-h-[48px] max-h-[48px]"
             />
           </Container>
@@ -74,21 +122,30 @@ export const TierLevelForm = ({
             </Text>
             <input
               type="number"
-              value={level.allowedLabels}
-              onChange={(event: any) => {}}
+              value={levelToEditOrDelete.qrCodes}
+              onChange={(event: any) => {
+                setLevelToEditOrDelete({
+                  ...levelToEditOrDelete,
+                  qrCodes: parseInt(event.target.value),
+                });
+              }}
               className="w-full text-on-surface p-[8px] bg-surface-dark rounded-md min-h-[48px] max-h-[48px]"
             />
           </Container>
         </Container>
         <Container intent="flexRowRight" gap="medium" className="">
-          <Button intent="secondary" size="medium" onClick={() => onCancel()}>
+          <Button
+            intent="secondary"
+            size="medium"
+            onClick={() => onCancel && onCancel()}
+          >
             Cancel
           </Button>
           <Button
             intent="primary"
             size="medium"
             onClick={() => {
-              //   onUpdate(userToUpdate);
+              updateHandler();
             }}
           >
             Update

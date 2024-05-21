@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 import { useRealTimeDb } from "@/context/realTimeDbContext";
 
 export const DashboardPage = () => {
-  const { totalWineries, totalEuLabels } = useRealTimeDb();
+  const { totalWineries, totalWines, totalIncome } = useRealTimeDb();
   return (
     <Container intent="flexRowWrap" px="large" gap="medium">
       <Container intent="flexRowLeft" gap="xsmall">
@@ -24,8 +24,13 @@ export const DashboardPage = () => {
       />
       <DashboardStatCard
         title="QR Codes"
-        stat={totalEuLabels}
+        stat={totalWines}
         icon="ic:baseline-qr-code"
+      />
+      <DashboardStatCard
+        title="Yearly Income"
+        stat={"$" + totalIncome}
+        icon="solar:money-bag-linear"
       />
     </Container>
   );
