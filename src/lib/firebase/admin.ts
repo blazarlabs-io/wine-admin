@@ -3,7 +3,13 @@ import { getAuth } from "firebase-admin/auth";
 import { getFirestore } from "firebase-admin/firestore";
 import { getFunctions } from "firebase-admin/functions";
 
-const serviceAccountKey = require("../../../serviceAccountKey.json");
+// const serviceAccountKey = require("../../../serviceAccountKey.json");
+const serviceAccountKey = JSON.parse(
+  Buffer.from(
+    process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT as string,
+    "base64"
+  ).toString()
+);
 let adminApp;
 
 // initialize admin firebase only once
