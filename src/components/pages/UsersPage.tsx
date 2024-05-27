@@ -37,9 +37,9 @@ export const UsersPage = () => {
   const [showConfirmDeleteUser, setShowConfirmDeleteUser] =
     useState<User | null>(null);
 
-  const createNewUser = httpsCallable(functions, "createNewUser");
-  const deleteUser = httpsCallable(functions, "deleteUser");
-  const sendEmail = httpsCallable(functions, "sendEmail");
+  const createNewUser = httpsCallable(functions, "auth-createNewUser");
+  const deleteUser = httpsCallable(functions, "auth-deleteUser");
+  const sendEmail = httpsCallable(functions, "email-sendEmail");
   const updateUserTierAndLevel = httpsCallable(
     functions,
     "updateUserTierAndLevel"

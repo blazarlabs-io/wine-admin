@@ -38,7 +38,7 @@ export const TierLevelForm = ({
       qrCodes: levelToEdit.qrCodes,
     });
 
-  const createLevelMapInDb = httpsCallable(functions, "createLevelMapInDb");
+  const createLevelMapInDb = httpsCallable(functions, "utils-createLevelMap");
 
   const updateHandler = async () => {
     updateAppLoading(true);

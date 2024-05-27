@@ -5,9 +5,12 @@ import { httpsCallable } from "firebase/functions";
 import { UserForList } from "@/typings/components";
 
 export const useGetUsersList = () => {
-  const listAllUsers = httpsCallable(functions, "listAllUsers");
-  const getWineryName = httpsCallable(functions, "getWineryName");
-  const getUserTierAndLevel = httpsCallable(functions, "getUserTierAndLevel");
+  const listAllUsers = httpsCallable(functions, "auth-listAllUsers");
+  const getWineryName = httpsCallable(functions, "winery-getWineryName");
+  const getUserTierAndLevel = httpsCallable(
+    functions,
+    "auth-getUserTierAndLevel"
+  );
   const [rawUsers, setRawUsers] = useState<User[]>([]);
   const [usersList, setUsersList] = useState<UserForList[]>([]);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(true);

@@ -51,7 +51,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold"> Task: replaceDbFieldName</Text>
           <BackendTaskReplaceDbField
-            name="replaceDbFieldName"
+            name="db-replaceDbFieldName"
             collection={{ label: "Collection", value: "wineries" }}
             oldField={{ label: "Old Field", value: "euLabels" }}
             newField={{ label: "New Field", value: "wines" }}
@@ -61,7 +61,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold">Task: createLevelMapInDb</Text>
           <BackEndTaskSetLevelMap
-            name="createLevelMapInDb"
+            name="utils-createLevelMap"
             map={{
               data: {
                 bronze: { price: 0, qrCodes: 2 },
@@ -76,7 +76,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold">Task: createWineColourDb</Text>
           <BackEndTaskSetLevelMap
-            name="createWineColourDb"
+            name="utils-createWineColour"
             map={{
               data: ["Red wine", "White wine", "Rosé wine", "Orange wine"],
             }}
@@ -86,7 +86,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold">Task: createWineBottleSizesDb</Text>
           <BackEndTaskSetLevelMap
-            name="createWineBottleSizesDb"
+            name="utils-createWineBottleSizes"
             map={{
               data: [
                 "750ml",
@@ -112,7 +112,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold">Task: createAromaProfileDb</Text>
           <BackEndTaskSetLevelMap
-            name="createAromaProfileDb"
+            name="utils-createAromaProfile"
             map={{
               data: [
                 "Fruity",
@@ -130,7 +130,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold">Task: createFlavourProfileDb</Text>
           <BackEndTaskSetLevelMap
-            name="createFlavourProfileDb"
+            name="utils-createFlavourProfile"
             map={{
               data: [
                 "Fruity",
@@ -150,7 +150,7 @@ export const BackendPage = () => {
             Task: createSustainabilityPracticesDb
           </Text>
           <BackEndTaskSetLevelMap
-            name="createSustainabilityPracticesDb"
+            name="utils-createSustainabilityPractices"
             map={{
               data: [
                 "Water management and conservation techniques",
@@ -171,7 +171,7 @@ export const BackendPage = () => {
         <Container intent="flexColLeft" gap="small">
           <Text className="font-semibold">Task: createClosureTypesDb</Text>
           <BackEndTaskSetLevelMap
-            name="createClosureTypesDb"
+            name="utils-createClosureTypes"
             map={{
               data: [
                 "Synthetic Cork",
@@ -192,7 +192,7 @@ export const BackendPage = () => {
             Task: createIrrigationPracticesDb
           </Text>
           <BackEndTaskSetLevelMap
-            name="createIrrigationPracticesDb"
+            name="utils-createIrrigationPractices"
             map={{
               data: [
                 "No irrigation",
@@ -208,7 +208,7 @@ export const BackendPage = () => {
           />
         </Container>
         <Container intent="flexColLeft" gap="small">
-          <Text className="font-semibold">Task: replaceWineryDataDb</Text>
+          <Text className="font-semibold">Task: replaceWineryData</Text>
           <BackEndReplaceWineryData />
         </Container>
       </Container>

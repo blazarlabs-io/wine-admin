@@ -17,7 +17,7 @@ export const NotificationsPage = () => {
   const { updateModal } = useModal();
   const { updateAppLoading } = useAppState();
 
-  const deleteNotification = httpsCallable(functions, "deleteNotification");
+  const deleteNotification = httpsCallable(functions, "db-deleteNotification");
 
   const handleNotificationDelete = (n: CreateAdminNotification) => {
     updateAppLoading(true);

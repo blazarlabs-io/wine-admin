@@ -2,12 +2,13 @@ import { Wine } from "@/typings/wineries";
 
 export const wineSample: Wine = {
   referenceNumber: "",
+  isMinified: true,
   generalInformation: {
     wineryName: "",
     wineCollectionName: "",
     country: "",
-    collectionSize: null,
-    bottlingYear: null,
+    collectionSize: "",
+    bottlingYear: "",
     awardsAndRecognitions: [],
     wineImageUrl: "",
     qrCodeUrl: "",
@@ -20,23 +21,23 @@ export const wineSample: Wine = {
     acidityLevel: "",
     tanningLevel: "",
     aromaProfile: {
-      has: null,
+      has: false,
       list: [],
     },
     flavourProfile: {
-      has: null,
+      has: false,
       list: [],
     },
     sulphiteLevel: "",
   },
   wineMakingTechnique: {
     wineMakingTechnique: "",
-    isWineVegan: null,
-    isWineOrganic: null,
-    isWineBioDynamic: null,
-    isWineNatural: null,
+    isWineVegan: false,
+    isWineOrganic: false,
+    isWineBioDynamic: false,
+    isWineNatural: false,
     sustainablePractices: {
-      has: null,
+      has: false,
       list: [],
     },
   },
@@ -45,8 +46,8 @@ export const wineSample: Wine = {
     storageTemperature: {
       units: ["celcius", "fahrenheit"],
       selected: {
-        unit: null,
-        value: null,
+        unit: "celcius",
+        value: "",
       },
     },
     lightingConditions: "",
@@ -62,4 +63,61 @@ export const wineSample: Wine = {
   },
   blendComponents: [],
   marketingInfo: "",
+  minifiedWine: {
+    upc: "",
+    wineryName: "",
+    wineCollectionName: "",
+    country: "",
+    wineType: "",
+    bottleSize: "",
+    wineColour: "",
+    alcoholLevel: "",
+    controlledDesignationOfOrigin: "",
+    wineImageUrl: "",
+    qrCodeUrl: "",
+    grapes: [],
+    blendIngredients: {
+      acidityRegulators: {
+        allergens: {
+          has: false,
+          list: [],
+        },
+        has: false,
+        list: [],
+      },
+      antioxidants: {
+        allergens: {
+          has: false,
+          list: [],
+        },
+        has: false,
+        list: [],
+      },
+      preservatives: {
+        allergens: {
+          has: false,
+          list: [],
+        },
+        has: false,
+        list: [],
+      },
+      stabilizers: {
+        allergens: {
+          has: false,
+          list: [],
+        },
+        has: false,
+        list: [],
+      },
+      finingAgents: {
+        allergens: {
+          has: false,
+          list: [],
+        },
+        has: false,
+        list: [],
+      },
+    },
+    residualSugar: "",
+  },
 };

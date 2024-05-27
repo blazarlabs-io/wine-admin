@@ -5,7 +5,6 @@ import { SpinnerLoader } from "@/components";
 import { useModal } from "@/context/modalContext";
 import { useRealTimeDb } from "@/context/realTimeDbContext";
 import {
-  GrapeVariety,
   GrapesMapCoordinatesInterface,
   OldWine,
   Wine,
@@ -13,11 +12,12 @@ import {
   WineryGeneralInfo,
 } from "@/typings/wineries";
 import { updateWineriesWithNewData } from "@/utils/firestoreUtils";
+import { useToast } from "@/context/toastContext";
 
 export const BackEndReplaceWineryData = () => {
   const { wineries } = useRealTimeDb();
   const { updateModal } = useModal();
-
+  const { updateToast } = useToast();
   const [loading, setLoading] = useState<boolean>(false);
   const [showConfirmationDialog, setShowConfirmationDialog] =
     useState<boolean>(false);
@@ -117,31 +117,15 @@ export const BackEndReplaceWineryData = () => {
         });
 
         winery.wines.map((wine: OldWine, wineIndex: number) => {
-          let grapes: any;
-          grapes = {
-            has: wine.ingredients.grapes.has,
-            list: [...wine.ingredients.grapes.list],
-          };
-
-          grapes.list.map(
-            (grape: GrapesMapCoordinatesInterface, index: number) => {
-              grapes.list[index] = {
-                name: grape.name,
-                percentage: grape.percentage,
-                vintageYear: wine.harvestYear,
-                vineyardId: "",
-              };
-            }
-          );
-
           newWineries[wineryIndex].wines.push({
             referenceNumber: wine.referenceNumber,
+            isMinified: true,
             generalInformation: {
               wineryName: wine.wineryName,
               wineCollectionName: wine.wineCollectionName,
               country: wine.country,
-              collectionSize: null,
-              bottlingYear: null,
+              collectionSize: "",
+              bottlingYear: "",
               awardsAndRecognitions: [],
               wineImageUrl: wine.wineImageUrl,
               qrCodeUrl: wine.qrCodeUrl,
@@ -150,9 +134,9 @@ export const BackEndReplaceWineryData = () => {
               wineColour: wine.colourOfWine,
               wineType: wine.typeOfWine,
               alcoholLevel: wine.alcoholLevel,
-              residualSugar: null,
-              acidityLevel: null,
-              tanningLevel: null,
+              residualSugar: "",
+              acidityLevel: "",
+              tanningLevel: "",
               aromaProfile: {
                 has: false,
                 list: [],
@@ -161,49 +145,46 @@ export const BackEndReplaceWineryData = () => {
                 has: false,
                 list: [],
               },
-              sulphiteLevel: null,
+              sulphiteLevel: "",
             },
             wineMakingTechnique: {
-              wineMakingTechnique: null,
-              isWineVegan: null,
-              isWineOrganic: null,
-              isWineBioDynamic: null,
-              isWineNatural: null,
+              wineMakingTechnique: "",
+              isWineVegan: false,
+              isWineOrganic: false,
+              isWineBioDynamic: false,
+              isWineNatural: false,
               sustainablePractices: {
                 has: false,
                 list: [],
               },
             },
             storageConditions: {
-              placeForInitialStorage: null,
+              placeForInitialStorage: "",
               storageTemperature: {
                 units: ["celcius", "fahrenheit"],
                 selected: {
-                  unit: null,
-                  value: null,
+                  unit: "celcius",
+                  value: "",
                 },
               },
-              lightingConditions: null,
-              humidityLevel: null,
-              vibrationLevel: null,
+              lightingConditions: "",
+              humidityLevel: "",
+              vibrationLevel: "",
             },
             packagingAndBranding: {
               bottleSize: wine.bottleSize,
-              bottleType: null,
-              closureType: null,
-              extraPackaging: null,
+              bottleType: "",
+              closureType: [],
+              extraPackaging: "",
               upc: wine.upc,
             },
             marketingInfo: "",
             blendComponents: [
               {
-                name: null,
-                type: null,
+                id: "",
+                name: "",
+                type: "",
                 ingredients: {
-                  grapesVarieties: {
-                    has: wine.ingredients.grapes.has,
-                    list: grapes.list,
-                  },
                   acidityRegulators: {
                     allergens: {
                       has: wine.ingredients.acidityRegulators.allergens.has,
@@ -244,42 +225,101 @@ export const BackEndReplaceWineryData = () => {
                     has: wine.ingredients.finingAgents.has,
                     list: wine.ingredients.finingAgents.list,
                   },
-                  sugars: wine.ingredients.sugars,
                 },
                 vineyardDetails: {
-                  id: null,
-                  grapeGrown: null,
+                  name: "",
+                  grape: {
+                    name: "",
+                    percentage: "",
+                    vintageYear: "",
+                  },
                   controlledDesignationOfOrigin:
                     wine.controlledDesignationOfOrigin,
-                  coordinates: null, //wine.coordinates,
-                  elevation: null,
-                  orientation: null,
-                  soilType: null,
-                  vinesAge: null,
-                  irrigationPractices: null,
+                  coordinates: [],
+                  elevation: "",
+                  orientation: "",
+                  soilType: "",
+                  vinesAge: "",
+                  irrigationPractices: [],
                 },
                 grapesHarvesting: {
-                  vintageYear: parseInt(wine.harvestYear),
-                  harvestMethod: null,
-                  yieldPerHectare: null,
-                  selectionProcess: null,
+                  vintageYear: wine.harvestYear,
+                  harvestMethod: "",
+                  yieldPerHectare: "",
+                  selectionProcess: "",
                 },
                 fermentationProcess: {
-                  method: null,
-                  yeastType: null,
-                  time: null,
-                  malolactic: null,
+                  method: "",
+                  yeastType: "",
+                  time: "",
+                  malolactic: false,
                 },
                 agingProcess: {
-                  vesselType: null,
+                  vesselType: "",
                 },
               },
             ],
+            minifiedWine: {
+              upc: wine.upc,
+              wineryName: wine.wineryName,
+              wineCollectionName: wine.wineCollectionName,
+              country: wine.country,
+              wineType: wine.typeOfWine,
+              bottleSize: wine.bottleSize,
+              wineColour: wine.colourOfWine,
+              alcoholLevel: wine.alcoholLevel,
+              controlledDesignationOfOrigin: wine.controlledDesignationOfOrigin,
+              wineImageUrl: wine.wineImageUrl,
+              qrCodeUrl: wine.qrCodeUrl,
+              grapes: [],
+              blendIngredients: {
+                acidityRegulators: {
+                  allergens: {
+                    has: wine.ingredients.acidityRegulators.allergens.has,
+                    list: wine.ingredients.acidityRegulators.allergens.list,
+                  },
+                  has: wine.ingredients.acidityRegulators.has,
+                  list: wine.ingredients.acidityRegulators.list,
+                },
+                antioxidants: {
+                  allergens: {
+                    has: wine.ingredients.antioxidants.allergens.has,
+                    list: wine.ingredients.antioxidants.allergens.list,
+                  },
+                  has: wine.ingredients.antioxidants.has,
+                  list: wine.ingredients.antioxidants.list,
+                },
+                preservatives: {
+                  allergens: {
+                    has: wine.ingredients.preservatives.allergens.has,
+                    list: wine.ingredients.preservatives.allergens.list,
+                  },
+                  has: wine.ingredients.preservatives.has,
+                  list: wine.ingredients.preservatives.list,
+                },
+                stabilizers: {
+                  allergens: {
+                    has: wine.ingredients.stabilizers.allergens.has,
+                    list: wine.ingredients.stabilizers.allergens.list,
+                  },
+                  has: wine.ingredients.stabilizers.has,
+                  list: wine.ingredients.stabilizers.list,
+                },
+                finingAgents: {
+                  allergens: {
+                    has: wine.ingredients.finingAgents.allergens.has,
+                    list: wine.ingredients.finingAgents.allergens.list,
+                  },
+                  has: wine.ingredients.finingAgents.has,
+                  list: wine.ingredients.finingAgents.list,
+                },
+              },
+              residualSugar: "",
+            },
           });
         });
       });
       setWineryData(newWineries);
-      setLoading(false);
     }
   };
 
@@ -299,10 +339,24 @@ export const BackEndReplaceWineryData = () => {
       console.log(wineryData);
       handleDbUpdate(wineryData)
         .then((res) => {
+          setLoading(false);
           console.log("DB UPDATED", res);
+          updateToast({
+            show: true,
+            status: "success",
+            message: "Database updated successfully.",
+            timeout: 5000,
+          });
         })
         .catch((error: any) => {
+          setLoading(false);
           console.log(error);
+          updateToast({
+            show: true,
+            status: "error",
+            message: "Error updating database.",
+            timeout: 5000,
+          });
         });
     }
   }, [wineryData]);
