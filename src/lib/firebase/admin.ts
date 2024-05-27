@@ -4,20 +4,20 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getFunctions } from "firebase-admin/functions";
 
 // const serviceAccountKey = require("../../../serviceAccountKey.json");
-const serviceAccountKey = JSON.parse(
-  Buffer.from(
-    process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT as string,
-    "base64"
-  )
-    .toString()
-    .replace(/\n/g, "")
-);
+
 let adminApp;
 
 // initialize admin firebase only once
 if (!getApps().length) {
   adminApp = initializeApp({
-    credential: cert(serviceAccountKey),
+    credential: cert({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT?.replace(
+        /\\n/g,
+        "\n"
+      ),
+    }),
   });
 }
 
