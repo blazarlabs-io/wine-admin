@@ -8,7 +8,9 @@ const serviceAccountKey = JSON.parse(
   Buffer.from(
     process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT as string,
     "base64"
-  ).toString()
+  )
+    .toString()
+    .replace(/\n/g, "")
 );
 let adminApp;
 
