@@ -1,0 +1,16 @@
+export const minifiedWineSample = {
+  upc: "",
+  wineryName: "",
+  wineCollectionName: "",
+  country: "",
+  wineType: "",
+  bottleSize: "",
+  wineColour: "",
+  alcoholLevel: "",
+  controlledDesignationOfOrigin: "",
+  wineImageUrl: "",
+  qrCodeUrl: "",
+  grapes: [],
+  blendIngredients: {},
+  residualSugar: "",
+};

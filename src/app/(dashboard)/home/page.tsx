@@ -5,6 +5,7 @@ import {
   UsersPage,
   SettingsPage,
   NotificationsPage,
+  BackendPage,
 } from "@/components";
 import { useSideBar } from "@/context/sideBarContext";
 import { useAppState } from "@/context/appStateContext";
@@ -28,6 +29,7 @@ export default function DashboardHomePage() {
           )}
           {item.selected && item.label === "Users" && <UsersPage />}
           {item.selected && item.label === "Settings" && <SettingsPage />}
+          {item.selected && item.label === "Backend" && <BackendPage />}
         </div>
       ))}
     </>

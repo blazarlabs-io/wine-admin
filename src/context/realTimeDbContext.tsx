@@ -1,23 +1,22 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
+import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import { LevelsInterface, TiersInterface } from "@/typings/data";
+import { getTotalIncome } from "@/utils/firestoreUtils";
 
 export interface RealTimeDbContextInterface {
   tiers: TiersInterface;
   levels: LevelsInterface;
+  wineries: any;
   wineTypes: string[];
+  wineColours: string[];
+  wineBottleSizes: string[];
   notifications: any;
   totalWineries: number;
-  totalEuLabels: number;
+  totalWines: number;
+  totalIncome: number;
 }
 
 const contextInitialData: RealTimeDbContextInterface = {
@@ -28,12 +27,16 @@ const contextInitialData: RealTimeDbContextInterface = {
     bronze: null,
     silver: null,
     gold: null,
-    diamond: null,
+    platinum: null,
   },
+  wineries: [],
   wineTypes: [],
+  wineColours: [],
+  wineBottleSizes: [],
   notifications: [],
   totalWineries: 0,
-  totalEuLabels: 0,
+  totalWines: 0,
+  totalIncome: 0,
 };
 
 const RealTimeDbContext = createContext(contextInitialData);
@@ -55,13 +58,19 @@ export const RealTimeDbProvider = ({
   const [levels, setLevels] = useState<LevelsInterface>(
     contextInitialData.levels
   );
+  const [wineries, setWineries] = useState<any>([]);
   const [wineTypes, setWineTypes] = useState<string[]>([]);
+  const [wineColours, setWineColours] = useState<string[]>([]);
+  const [wineBottleSizes, setWineBottleSizes] = useState<string[]>([]);
   const [notifications, setNotifications] = useState<any>([]);
   const [totalWineries, setTotalWineries] = useState<number>(
     contextInitialData.totalWineries
   );
-  const [totalEuLabels, setTotalEuLabels] = useState<number>(
-    contextInitialData.totalEuLabels
+  const [totalWines, setTotalWines] = useState<number>(
+    contextInitialData.totalWines
+  );
+  const [totalIncome, setTotalIncome] = useState<number>(
+    contextInitialData.totalIncome
   );
 
   const sortLevels = (levels: LevelsInterface) => {
@@ -69,7 +78,7 @@ export const RealTimeDbProvider = ({
       bronze: null,
       silver: null,
       gold: null,
-      diamond: null,
+      platinum: null,
     };
 
     Object.keys(levels)
@@ -91,6 +100,8 @@ export const RealTimeDbProvider = ({
           setTiers(data.tier);
           setLevels(sortLevels(data.level));
           setWineTypes(data.wineTypes);
+          setWineColours(data.wineColours);
+          setWineBottleSizes(data.wineBottleSizes);
         }
       }
     );
@@ -107,15 +118,32 @@ export const RealTimeDbProvider = ({
     const unsubWineries = onSnapshot(
       collection(db, "wineries"),
       (querySnapshot) => {
+        setWineries(
+          querySnapshot.docs.map((doc) => {
+            return {
+              id: doc.id,
+              ...doc.data(),
+            };
+          })
+        );
         setTotalWineries(querySnapshot.size);
         querySnapshot.forEach((doc) => {
-          const euLabels = doc.data().euLabels;
-          if (euLabels) {
-            setTotalEuLabels((prev) => prev + euLabels.length);
+          const wines = doc.data().wines;
+          if (wines) {
+            setTotalWines((prev) => prev + wines.length);
           }
         });
       }
     );
+
+    getTotalIncome()
+      .then((result) => {
+        console.log(result);
+        // setTotalIncome(result.data.totalIncome);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     return () => {
       unsubSysVars();
@@ -127,10 +155,14 @@ export const RealTimeDbProvider = ({
   const value = {
     tiers,
     levels,
+    wineries,
     wineTypes,
+    wineColours,
     notifications,
     totalWineries,
-    totalEuLabels,
+    totalWines,
+    totalIncome,
+    wineBottleSizes,
   };
 
   return (

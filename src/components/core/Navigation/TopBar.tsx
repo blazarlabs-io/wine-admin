@@ -41,8 +41,8 @@ export const TopBar = ({ className }: TopBarProps) => {
       )}
     >
       <Image
-        src="/eeh-logo.svg"
-        width={56}
+        src="/logo-blazarlabs.png"
+        width={124}
         height={56}
         alt="logo"
         style={{ objectFit: "cover" }}

@@ -8,7 +8,7 @@ export interface TierAndLevelInterface {
   level: LevelType | null;
 }
 export interface SingleLevelInterface {
-  euLabels: number;
+  qrCodes: number;
   price: number;
 }
 
@@ -20,7 +20,7 @@ export interface LevelsInterface {
   bronze: SingleLevelInterface | null;
   silver: SingleLevelInterface | null;
   gold: SingleLevelInterface | null;
-  diamond: SingleLevelInterface | null;
+  platinum: SingleLevelInterface | null;
 }
 
 export interface CreateAdminNotification {

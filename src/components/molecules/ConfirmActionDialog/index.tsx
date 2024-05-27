@@ -3,20 +3,22 @@
 import { Button, Container, Text } from "@/components";
 import { useEffect, useState } from "react";
 
-export interface ConfirmDeleteDialogProps {
-  onDelete: () => void;
+export interface ConfirmActionDialogProps {
+  action: string;
+  onConfirm: () => void;
   onCancel: () => void;
 }
 
-export const ConfirmDeleteDialog = ({
-  onDelete,
+export const ConfirmActionDialog = ({
+  action,
+  onConfirm,
   onCancel,
-}: ConfirmDeleteDialogProps) => {
+}: ConfirmActionDialogProps) => {
   const [value, setValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
 
   useEffect(() => {
-    if (value === "DELETE") {
+    if (value === action) {
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
@@ -33,14 +35,15 @@ export const ConfirmDeleteDialog = ({
         <Container intent="flexColLeft" gap="medium">
           <Text intent="h3">Confirm</Text>
           <Text>
-            Please type the word <span>DELETE</span> and click confirm to
-            proceed. This deletion cannot be undone.
+            Please type the word{" "}
+            <span className="font-semibold text-status-error">{action}</span>{" "}
+            and click confirm to proceed. This deletion cannot be undone.
           </Text>
         </Container>
         <Container intent="flexColLeft" gap="small">
           <input
             type="text"
-            placeholder="DELETE"
+            placeholder={action}
             value={value}
             onChange={(event: any) => {
               setValue(event.target.value);
@@ -57,7 +60,7 @@ export const ConfirmDeleteDialog = ({
             size="medium"
             disabled={isDisabled}
             fullWidth
-            onClick={onDelete}
+            onClick={onConfirm}
           >
             Confirm
           </Button>

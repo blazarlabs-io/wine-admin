@@ -42,7 +42,7 @@ export const Login = ({ title, description }: LoginProps) => {
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const isUserAdmin = httpsCallable(functions, "isUserAdmin");
+  const isUserAdmin = httpsCallable(functions, "auth-isUserAdmin");
 
   useEffect(() => {
     !user && updateAppLoading(false);

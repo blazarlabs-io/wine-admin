@@ -31,7 +31,10 @@ export const EditUserForm = ({
   const [currentTierAndLevel, setCurrentTierAndLevel] =
     useState<TierAndLevelInterface | null>(null);
 
-  const getUserTierAndLevel = httpsCallable(functions, "getUserTierAndLevel");
+  const getUserTierAndLevel = httpsCallable(
+    functions,
+    "auth-getUserTierAndLevel"
+  );
 
   useEffect(() => {
     getUserTierAndLevel({
