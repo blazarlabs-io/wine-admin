@@ -12,7 +12,11 @@ let adminApp;
 // initialize admin firebase only once
 if (!getApps().length) {
   adminApp = initializeApp({
-    credential: cert(serviceAccountKey),
+    credential: cert({
+      projectId: serviceAccountKey.project_id,
+      clientEmail: serviceAccountKey.client_email,
+      privateKey: serviceAccountKey.private_key.replace(/\\n/g, "\n"),
+    }),
   });
 }
 
