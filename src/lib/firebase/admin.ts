@@ -5,7 +5,7 @@ import { getFunctions } from "firebase-admin/functions";
 
 // const serviceAccountKey = require("../../../serviceAccountKey.json");
 const serviceAccountKey = JSON.parse(
-  process.env.NEXT_PUBLIC_FIREBASE_SERVICE_ACCOUNT as string
+  process.env.NEXT_PUBLIC_FIREBASE_ADMIN_SERVICE_ACCOUNT as string
 );
 let adminApp;
 
