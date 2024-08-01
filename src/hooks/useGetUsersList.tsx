@@ -27,7 +27,10 @@ export const useGetUsersList = () => {
             level: wineryData.data.level,
             avatar: user.photoURL,
             email: user.email,
-            wines: wineryData.data.wines.length,
+            wines:
+              wineryData.data.wines !== undefined &&
+              wineryData.data.wines !== null &&
+              wineryData.data.wines.length,
             createdAt: user.metadata.creationTime,
             lastSignIn: user.metadata.lastSignInTime,
           },
