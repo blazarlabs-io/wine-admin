@@ -1,11 +1,4 @@
-import {
-  TopBar,
-  SideBar,
-  Modal,
-  AuthSpinnerLoader,
-  GeneralLoaderOverlay,
-  Toast,
-} from "@/components";
+import { Toaster, TopbarFull, SideBar } from "@/components";
 
 export interface BaseLayoutProps {
   children: React.ReactNode;
@@ -13,13 +6,10 @@ export interface BaseLayoutProps {
 
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
   return (
-    <main className="relative flex flex-col justify-start items-center mx-auto max-w-[1440px] h-screen w-[100vw]">
-      <GeneralLoaderOverlay />
-      <AuthSpinnerLoader />
-      <Modal />
-      <Toast />
-      <TopBar />
-      <div className="flex items-start w-full h-full mt-[48px]">
+    <main className="relative flex flex-col justify-start items-center mx-auto h-screen w-[100vw]">
+      <Toaster />
+      <TopbarFull />
+      <div className="flex items-start w-full h-full">
         <SideBar />
         <div className="relative w-full h-full">{children}</div>
       </div>

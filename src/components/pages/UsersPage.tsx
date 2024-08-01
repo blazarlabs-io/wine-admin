@@ -1,35 +1,42 @@
 "use client";
 
-import {
-  Container,
-  Text,
-  UsersProfileCrud,
-  CreateNewUserForm,
-  EditUserForm,
-  CreateNewUserCard,
-  ConfirmActionDialog,
-} from "@/components";
 import { UserToEditOrDeleteInterface } from "@/typings/auth";
 import { Icon } from "@iconify/react";
 import { User } from "firebase/auth";
 import { useState } from "react";
-import { useModal } from "@/context/modalContext";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "@/lib/firebase/client";
-import { ToastProps } from "@/typings/components";
-import { firebaseAuthErrors } from "@/utils/firebaseAuthErrors";
-import { useToast } from "@/context/toastContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/core/tooltip";
 import { useAppState } from "@/context/appStateContext";
-import { generatePasswordHtml } from "@/utils/generatePasswordHtml";
 import { useGetUsersList } from "@/hooks/useGetUsersList";
+import { PageLayout } from "../layouts/Page";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/core/table";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/core/avatar";
+import { Button } from "../ui/core/button";
+import { LoaderCircle } from "lucide-react";
+import { EditUserCard } from "../ui/molecules/edit-user-card";
+import { useWineClient } from "@/context/wineClientSdkContext";
+import { useToast } from "../ui/core/toast/use-toast";
+import { ConfirmActionCard } from "../ui/molecules/confirm-action-card";
+import { Text } from "../ui/core/text";
 
 export const UsersPage = () => {
-  const { updateModal, updateModalLoading } = useModal();
-  const { updateToast } = useToast();
   const { updateAppLoading } = useAppState();
-  const { usersList, loadingUsers, refreshList } = useGetUsersList();
+  const { usersList, loadingUsers } = useGetUsersList();
+  const { wineClient } = useWineClient();
+  const { toast } = useToast();
 
-  const [showCreateNewUser, setShowCreateNewUser] = useState<boolean>(false);
   const [showEditUser, setShowEditUser] = useState<boolean>(false);
   const [userToEditOrDelete, setUserToEditOrDelete] = useState<User | null>(
     null
@@ -37,28 +44,10 @@ export const UsersPage = () => {
   const [showConfirmDeleteUser, setShowConfirmDeleteUser] =
     useState<User | null>(null);
 
-  const createNewUser = httpsCallable(functions, "auth-createNewUser");
-  const deleteUser = httpsCallable(functions, "auth-deleteUser");
-  const sendEmail = httpsCallable(functions, "email-sendEmail");
-  const updateUserTierAndLevel = httpsCallable(
-    functions,
-    "updateUserTierAndLevel"
-  );
-
-  const modalData = {
-    show: false,
-    title: "",
-    description: "",
-    action: {
-      label: "",
-      onAction: () => {},
-    },
-  };
-
   return (
-    <>
+    <PageLayout>
       {showConfirmDeleteUser && (
-        <ConfirmActionDialog
+        <ConfirmActionCard
           action="DELETE"
           onCancel={() => {
             setShowConfirmDeleteUser(null);
@@ -66,192 +55,159 @@ export const UsersPage = () => {
           onConfirm={() => {
             setShowConfirmDeleteUser(null);
             updateAppLoading(true);
-            deleteUser({
-              data: {
-                uid: showConfirmDeleteUser?.uid,
-              },
-            })
-              .then((result) => {
+            wineClient.auth
+              .deleteUser(showConfirmDeleteUser?.uid as string)
+              .then((result: any) => {
                 // Read result of the Cloud Function.
                 /** @type {any} */
                 const data = result.data;
                 const sanitizedMessage: any = data;
-                const toastProps: ToastProps = {
-                  show: true,
-                  status: "success",
-                  message: sanitizedMessage.message,
-                  timeout: 5000,
-                };
                 updateAppLoading(false);
-                updateToast(toastProps);
-                refreshList();
+                toast({
+                  title: "Success",
+                  description: sanitizedMessage,
+                });
               })
-              .catch((error) => {
+              .catch((error: any) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                const toastProps: ToastProps = {
-                  show: true,
-                  status: "error",
-                  message:
-                    (firebaseAuthErrors[errorCode] as string) ?? errorMessage,
-                  timeout: 5000,
-                };
-                console.log(toastProps);
                 updateAppLoading(false);
-                updateToast(toastProps);
+                toast({
+                  title: "Error",
+                  description: errorMessage,
+                });
               });
           }}
         />
       )}
-      {/* {showCreateNewUser && (
-        <CreateNewUserForm
-          onCreate={(data) => {
-            setShowCreateNewUser(false);
-            updateModalLoading(true);
-            updateAppLoading(true);
 
-            createNewUser({
-              data: {
-                email: data.email,
-                password: data.password,
-                tier: data.tier,
-                level: data.level,
-              },
-            })
-              .then((result) => {
-                const data = result.data;
-                const sanitizedMessage: any = data;
-                const toastProps: ToastProps = {
-                  show: true,
-                  status: "success",
-                  message: "User created successfully with Tier and Level",
-                  timeout: 5000,
-                };
-
-                updateAppLoading(false);
-                updateToast(toastProps);
-                updateModalLoading(false);
-
-                sendEmail({
-                  data: {
-                    from: "it@blazarlabs.io",
-                    to: sanitizedMessage.email,
-                    subject: "Welcome to Blazar Labs",
-                    text: `Welcome to Blazar Labs! Your account has been created successfully. Your Tier is ${sanitizedMessage.tier} and Level is ${sanitizedMessage.level}.`,
-                    html: generatePasswordHtml(sanitizedMessage.password),
-                  },
-                })
-                  .then((result) => {
-                    const data = result.data;
-                    const sanitizedMessage: any = data;
-                    console.log(sanitizedMessage.message);
-                    refreshList();
-                  })
-                  .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.log(firebaseAuthErrors[errorCode] as string);
-                  });
-              })
-              .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(firebaseAuthErrors[errorCode] as string);
-                const toastProps: ToastProps = {
-                  show: true,
-                  status: "error",
-                  message:
-                    (firebaseAuthErrors[errorCode] as string) ?? errorMessage,
-                  timeout: 5000,
-                };
-                updateToast(toastProps);
-                updateModalLoading(false);
-                updateAppLoading(false);
-              });
-          }}
-          onCancel={() => setShowCreateNewUser(false)}
-        />
-      )} */}
       {showEditUser && (
-        <EditUserForm
+        <EditUserCard
           user={userToEditOrDelete as UserToEditOrDeleteInterface}
           onUpdate={(userToUpdate: UserToEditOrDeleteInterface) => {
             console.log("USER TO UPDATE", userToUpdate);
             updateAppLoading(true);
-            updateUserTierAndLevel({
-              data: {
+            wineClient.winery
+              .updateWineryTierAndLevel({
                 uid: userToUpdate.uid,
                 tier: userToUpdate.tier,
                 level: userToUpdate.level,
-              },
-            })
-              .then((result) => {
+              })
+              .then((result: any) => {
                 // Read result of the Cloud Function.
                 /** @type {any} */
                 const data = result.data;
                 const sanitizedMessage: any = data;
-                console.log(sanitizedMessage.message);
                 updateAppLoading(false);
-                updateToast({
-                  show: true,
-                  status: "success",
-                  message: "User updated successfully",
-                  timeout: 3000,
+
+                toast({
+                  title: "Success",
+                  description: sanitizedMessage,
                 });
                 setShowEditUser(false);
-                refreshList();
               })
-              .catch((error) => {
+              .catch((error: any) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(firebaseAuthErrors[errorCode] as string);
                 updateAppLoading(false);
-                updateToast({
-                  show: true,
-                  status: "error",
-                  message:
-                    (firebaseAuthErrors[errorCode] as string) ?? errorMessage,
-                  timeout: 5000,
+                toast({
+                  title: "Error",
+                  description: errorMessage,
                 });
               });
           }}
           onCancel={() => setShowEditUser(false)}
         />
       )}
-      <Container intent="flexColLeft" px="large" gap="medium">
-        <Container intent="flexRowLeft" gap="xsmall">
-          <Icon
-            icon="fluent:people-24-regular"
-            color="#dddddd"
-            width="40"
-            height="40"
-          />
-          <Text intent="h3">Users</Text>
-        </Container>
-        {/* <CreateNewUserCard onClick={() => setShowCreateNewUser(true)} /> */}
-        <Container intent="flexColCenter" className="min-h-[134px] w-full">
-          <UsersProfileCrud
-            loading={loadingUsers}
-            users={usersList}
-            onEdit={(user: User) => {
-              setUserToEditOrDelete(user);
-              setShowEditUser(true);
-            }}
-            onDelete={(user: User) => {
-              modalData.show = true;
-              modalData.title = "Delete User";
-              modalData.description =
-                "Are you sure you want to delete this user? This operation cannot be undone.";
-              modalData.action.label = "Yes";
-              modalData.action.onAction = () => {
-                updateModal({ ...modalData, show: false });
-                setShowConfirmDeleteUser(user);
-              };
-              updateModal(modalData);
-            }}
-          />
-        </Container>
-      </Container>
-    </>
+      <div className="flex items-center justify-start gap-[8px]">
+        <Text intent="h4">Users</Text>
+      </div>
+      {loadingUsers ? (
+        <div className="flex items-center justify-center w-full h-[224px]">
+          <LoaderCircle className="animate-spin" size={24} />
+        </div>
+      ) : (
+        <div className="w-full">
+          <Table>
+            <TableCaption>A list of your clients.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Avatar</TableHead>
+                <TableHead>Winery</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="">Level</TableHead>
+                <TableHead className="">No. Wines</TableHead>
+                <TableHead className="">Created At</TableHead>
+                <TableHead className="">Last Sign In</TableHead>
+                <TableHead className="text-right"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {usersList.map((user) => (
+                <TableRow key={`${user.uid + user.email}`}>
+                  <TableCell className="font-medium">
+                    <Avatar>
+                      <AvatarImage
+                        src={user?.photoURL as string}
+                        alt="@shadcn"
+                      />
+                      <AvatarFallback>
+                        {user?.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell>{user.wineryName || "N/A"}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.level}</TableCell>
+                  <TableCell>{user.wines}</TableCell>
+                  <TableCell>{user.metadata.creationTime}</TableCell>
+                  <TableCell>{user.metadata.lastSignInTime}</TableCell>
+                  <TableCell className="text-right">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              setShowEditUser(true);
+                              setUserToEditOrDelete(user);
+                            }}
+                            className="mr-[8px]"
+                          >
+                            <Icon icon="fluent:edit-16-regular" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Edit tier and level</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              setShowConfirmDeleteUser(user);
+                            }}
+                          >
+                            <Icon icon="fluent:delete-16-regular" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Delete user</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+    </PageLayout>
   );
 };

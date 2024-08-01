@@ -4,6 +4,8 @@ import { ModalProvider } from "./modalContext";
 import { RealTimeDbProvider } from "./realTimeDbContext";
 import { SideBarProvider } from "./sideBarContext";
 import { ToastProvider } from "./toastContext";
+import { WineClientProvider } from "./wineClientSdkContext";
+import { ThemeProvider } from "./ThemeProvider";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -11,16 +13,27 @@ export interface ProvidersProps {
 
 export const Providers = ({ children }: ProvidersProps) => {
   return (
-    <RealTimeDbProvider>
-      <AppStateProvider>
-        <ModalProvider>
-          <ToastProvider>
-            <SideBarProvider>
-              <AuthProvider>{children}</AuthProvider>
-            </SideBarProvider>
-          </ToastProvider>
-        </ModalProvider>
-      </AppStateProvider>
-    </RealTimeDbProvider>
+    <WineClientProvider>
+      <RealTimeDbProvider>
+        <AppStateProvider>
+          <ModalProvider>
+            <ToastProvider>
+              <SideBarProvider>
+                <AuthProvider>
+                  <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                  >
+                    {children}
+                  </ThemeProvider>
+                </AuthProvider>
+              </SideBarProvider>
+            </ToastProvider>
+          </ModalProvider>
+        </AppStateProvider>
+      </RealTimeDbProvider>
+    </WineClientProvider>
   );
 };

@@ -23,6 +23,8 @@ export interface TabItemInterface {
   label: string;
   icon: string;
   selected: boolean;
+  url: string;
+  disabled: boolean;
 }
 
 export interface TabGroupProps {
@@ -37,8 +39,12 @@ export interface UserAvatarProps {
 
 export interface UserForList extends User {
   wineryName: string;
-  tier: TierType;
   level: LevelType;
+  avatar: string;
+  email: string;
+  wines: number;
+  createdAt: string;
+  lastSignIn: string;
 }
 
 export interface UsersProfileCrudProps {

@@ -7,6 +7,7 @@ import { getFunctions } from "firebase-admin/functions";
 const serviceAccountKey = JSON.parse(
   process.env.NEXT_PUBLIC_FIREBASE_ADMIN_SERVICE_ACCOUNT as string
 );
+
 let adminApp;
 
 // initialize admin firebase only once

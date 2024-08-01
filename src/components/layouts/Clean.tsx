@@ -1,4 +1,5 @@
-import { Modal, Toast } from "@/components";
+import { TopbarClean } from "@/components/ui/molecules/topbar-clean";
+import { Toaster } from "@/components/ui/core/toast/toaster";
 
 export interface BaseLayoutProps {
   children: React.ReactNode;
@@ -6,9 +7,9 @@ export interface BaseLayoutProps {
 
 export const CleanLayout = ({ children }: BaseLayoutProps) => {
   return (
-    <main className="relative py-[32px] flex flex-col justify-start items-center mx-auto max-w-[1440px] h-screen w-full">
-      <Toast />
-      <Modal />
+    <main className="relative flex flex-col justify-start items-center mx-auto h-screen w-full">
+      <Toaster />
+      <TopbarClean />
       {children}
     </main>
   );
