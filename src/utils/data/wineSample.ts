@@ -3,8 +3,10 @@ import { Wine } from "@/typings/wineries";
 export const wineSample: Wine = {
   referenceNumber: "",
   isMinified: true,
+  createdAt: null,
   generalInformation: {
     wineryName: "",
+    wineryId: "",
     wineCollectionName: "",
     country: "",
     collectionSize: "",
@@ -63,7 +65,14 @@ export const wineSample: Wine = {
   },
   blendComponents: [],
   marketingInfo: "",
+  tokenization: {
+    isTokenized: false,
+    tokenizationDate: null,
+    ipfsHash: "",
+    ipfsUrl: "",
+  },
   minifiedWine: {
+    wineryId: "",
     upc: "",
     wineryName: "",
     wineCollectionName: "",

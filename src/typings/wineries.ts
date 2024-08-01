@@ -46,9 +46,11 @@ export interface WineryGeneralInfo {
 export interface Wine {
   referenceNumber: string;
   isMinified: boolean;
+  createdAt: Timestamp | null;
   // wine general information
   generalInformation: {
     wineryName: string;
+    wineryId: string;
     wineCollectionName: string;
     country: string;
     collectionSize: string;
@@ -107,12 +109,20 @@ export interface Wine {
   blendComponents: BlendComponent[];
   marketingInfo: string;
   minifiedWine: MinifiedWine;
+  // Tokenization
+  tokenization: {
+    isTokenized: boolean;
+    tokenizationDate: Timestamp | null;
+    ipfsHash: string;
+    ipfsUrl: string;
+  };
 }
 
 // MINIFIED WINE
 export interface MinifiedWine {
   upc: string;
   wineryName: string;
+  wineryId: string;
   wineCollectionName: string;
   country: string;
   wineType: string;
@@ -198,7 +208,7 @@ export interface VineyardDetails {
   coordinates: CoordinateInterface[];
   elevation: string;
   orientation: string;
-  soilType: string;
+  soilType: string[];
   vinesAge: string;
   irrigationPractices: string[];
 }
@@ -214,8 +224,8 @@ export interface GrapesHarvesting {
 // FERMENTATION PROCESS
 export interface FermentationProcess {
   method: string;
-  yeastType: string;
-  time: string;
+  yeastType: string[];
+  time: string[];
   malolactic: boolean;
 }
 

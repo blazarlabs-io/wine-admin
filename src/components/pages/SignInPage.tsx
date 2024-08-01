@@ -1,12 +1,12 @@
-import { Login, Container } from "@/components";
+import { SignInCard } from "../ui/molecules/sign-in-card";
 
 export const SignInPage = () => {
   return (
-    <Container intent="flexRowCenter" className="w-full h-full">
-      <Login
+    <div className="flex items-center justify-center w-full h-full">
+      <SignInCard
         title="Sign In"
         description="Sign in with your administrator credentials."
       />
-    </Container>
+    </div>
   );
 };
