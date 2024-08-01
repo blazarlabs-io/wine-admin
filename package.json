@@ -14,7 +14,7 @@
     "import:firestore:production": "firestore-import --accountCredentials ./src/lib/firebase/google-services/production.json --backupFile ./src/lib/firebase/backup/dev-backup-2.json"
   },
   "dependencies": {
-    "@blzlabs/wine-client-sdk": "file:../wine-client-sdk",
+    "@blzlabs/wine-client-sdk": "^0.0.3",
     "@headlessui/react": "^2.0.3",
     "@iconify/react": "^4.1.1",
     "@radix-ui/react-avatar": "^1.1.0",
