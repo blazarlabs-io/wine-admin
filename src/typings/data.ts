@@ -30,3 +30,10 @@ export interface CreateAdminNotification {
   wineryPhone: string;
   wineryRepresentative: string;
 }
+
+export interface DynamicQrCodes {
+  docId: string;
+  staticUrl: string;
+  redirectUrl: string;
+  imageUrl: string;
+}
