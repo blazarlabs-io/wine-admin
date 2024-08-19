@@ -6,7 +6,6 @@ import { useAppState } from "@/context/appStateContext";
 
 export const ProtectedPage = ({ children }: React.PropsWithChildren) => {
   const { user } = useAuth();
-
   const { updateAppLoading } = useAppState();
 
   if (!user) {
