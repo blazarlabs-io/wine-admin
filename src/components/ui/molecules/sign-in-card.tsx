@@ -72,6 +72,7 @@ export const SignInCard = ({ title, description }: SignInCardProps) => {
     wineClient.auth
       .isUserAdmin(email.address)
       .then((result: any) => {
+        console.log(result);
         if (result.data) {
           signInWithEmailAndPassword(auth, email.address, password.value)
             .then((userCredential) => {

@@ -24,6 +24,9 @@ export {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
 } from "./ui/core/dialog";
 export { Toaster } from "./ui/core/toast/toaster";
 export { Toast } from "./ui/core/toast/toast";
@@ -109,3 +112,8 @@ export { DashboardPage } from "./pages/DashboardPage";
 export { UsersPage } from "./pages/UsersPage";
 export { SystemVariablesPage } from "./pages/SystemVariablesPage";
 export { BackEndPage } from "./pages/BackEndPage";
+export { QrCodesPage } from "./pages/QrCodesPage";
+
+// WIDGETS
+export { QrCodeGenerator } from "./widgets/qr-code-generator";
+export { QrCodeViewer } from "./widgets/qr-code-viewer";

@@ -32,6 +32,13 @@ const contextInitialData: SideBarContextInterface = {
       disabled: false,
     },
     {
+      label: "Qr Codes",
+      icon: "bi:qr-code",
+      selected: false,
+      url: "/qr-codes",
+      disabled: false,
+    },
+    {
       label: "Backend",
       icon: "solar:server-outline",
       selected: false,
