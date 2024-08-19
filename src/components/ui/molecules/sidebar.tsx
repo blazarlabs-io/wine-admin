@@ -10,7 +10,7 @@ export const SideBar = () => {
   const { items, handleItems } = useSideBar();
 
   return (
-    <div className="py-[24px] px-[8px] flex items-start justify-start w-[240px] max-h-fit bg-surface-light h-full border-r border-l">
+    <div className="py-[24px] px-[8px] flex items-start justify-start min-w-[240px] max-w-[240px] max-h-fit bg-surface-light h-full border-r border-l">
       <div className="flex items-start justify-start w-full">
         <nav className="grid items-start px-2 text-sm font-medium w-full">
           {items.map((item, index) => (

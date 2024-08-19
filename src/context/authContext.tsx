@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/firebase/client";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAppState } from "./appStateContext";
 
 // LIBS
@@ -36,6 +36,7 @@ export const AuthProvider = ({
   children,
 }: React.PropsWithChildren): JSX.Element => {
   const { updateAppLoading } = useAppState();
+  const pathname = usePathname();
 
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -47,8 +48,15 @@ export const AuthProvider = ({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("PATHNAME", pathname);
+
       setAuthLoading(false);
       updateAppLoading(true);
+
+      if (pathname.startsWith("/dynamic-qr-codes")) {
+        return;
+      }
+
       if (user) {
         setUser(user);
         updateAppLoading(false);
